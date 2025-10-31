@@ -107,11 +107,11 @@ fun RegistroScreen(navController: NavController, modifier: Modifier = Modifier) 
         Spacer(modifier = Modifier.height(16.dp))
 
         // --- BOTÓN DE REGISTRO ---
-        Button(onClick = { 
+        Button(onClick = {
             // Aquí se define la acción que se ejecuta al pulsar el botón.
             // `navController.popBackStack()` navega a la pantalla anterior en la pila de navegación.
             // En este caso, regresa a la pantalla de inicio de sesión.
-            navController.popBackStack() 
+            navController.popBackStack()
         }) {
             Text("Registrarse")
         }

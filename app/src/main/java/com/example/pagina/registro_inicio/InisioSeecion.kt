@@ -25,57 +25,70 @@ import com.example.pagina.navegacion.AppRorutas
 import com.example.pagina.ui.theme.PaginaTheme
 
 /**
- * Define la pantalla de inicio de sesión.
+ * Define la pantalla de inicio de sesión de la aplicación.
+ * Es una función @Composable, lo que significa que describe una parte de la interfaz de usuario.
  *
- * @param navController El controlador para gestionar la navegación.
+ * @param navController El controlador que se usa para navegar entre las diferentes pantallas.
  */
 @Composable
 fun InicioSesionScreen(navController: NavController) {
 
-    // --- ESTADO DEL FORMULARIO ---
-    // `remember` y `mutableStateOf` para guardar el estado del correo y la contraseña.
+    // --- 1. ESTADO DEL FORMULARIO ---
+    // `remember` y `mutableStateOf` se usan para crear y recordar el estado de los campos de texto.
+    // `email` y `password` son variables de estado. Cuando su valor cambia (porque el usuario escribe),
+    // la pantalla se "recompone" (se redibuja) automáticamente para mostrar el nuevo texto.
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    // --- DISEÑO DE LA PANTALLA ---
+    // --- 2. DISEÑO DE LA PANTALLA ---
+    // `Column` organiza a sus componentes hijos en una secuencia vertical (uno debajo del otro).
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxSize()      // Hace que la columna ocupe todo el espacio disponible.
+            .padding(16.dp),   // Añade un margen de 16.dp en todos los lados.
+        verticalArrangement = Arrangement.Center,   // Centra los elementos verticalmente en la pantalla.
+        horizontalAlignment = Alignment.CenterHorizontally // Centra los elementos horizontalmente.
     ) {
 
-        Text("Inicio de Sesión")
+        Text("Inicio de Sesión") // Un texto simple que sirve como título.
+
+        // `Spacer` crea un espacio vacío para separar elementos.
         Spacer(modifier = Modifier.height(16.dp))
 
-        // --- CAMPO DE CORREO ---
+        // --- CAMPO DE TEXTO PARA EL CORREO ---
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Correo Electrónico") }
+            value = email, // El texto que se muestra en el campo (vinculado a la variable de estado).
+            onValueChange = { email = it }, // Se ejecuta cada vez que el usuario escribe, actualizando la variable `email`.
+            label = { Text("Correo Electrónico") } // La etiqueta que se muestra sobre el campo.
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // --- CAMPO DE CONTRASEÑA ---
+        // --- CAMPO DE TEXTO PARA LA CONTRASEÑA ---
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = password, // Vinculado a la variable de estado `password`.
+            onValueChange = { password = it }, // Actualiza la variable `password` al escribir.
             label = { Text("Contraseña") },
-            visualTransformation = PasswordVisualTransformation() // Oculta el texto de la contraseña.
+            // `visualTransformation` se usa para cambiar la apariencia del texto.
+            // `PasswordVisualTransformation()` reemplaza los caracteres por puntos (••••) para ocultar la contraseña.
+            visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(16.dp))
 
         // --- BOTÓN DE INICIO DE SESIÓN ---
-        Button(onClick = { /* TODO: Implementar la lógica de autenticación */ }) {
-            Text("Iniciar Sesión")
+        Button(onClick = { 
+            // `onClick` define la acción que se ejecuta cuando el usuario pulsa el botón.
+            // TODO: Aquí es donde se debe añadir la lógica para verificar el correo y la contraseña,
+            // por ejemplo, usando Firebase Authentication.
+        }) {
+            Text("Iniciar Sesión") // El texto que se muestra dentro del botón.
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // --- BOTÓN PARA IR AL REGISTRO ---
+        // --- BOTÓN PARA IR A LA PANTALLA DE REGISTRO ---
         Button(onClick = {
-            // Navega a la pantalla de registro usando la ruta definida en AppRorutas.
+            // Usamos el `navController` para navegar a la pantalla de registro.
+            // `AppRorutas.Registro.route` contiene la ruta de destino (p. ej., "/registro").
             navController.navigate(AppRorutas.Registro.route)
         }) {
             Text("¿No tienes cuenta? Regístrate")
@@ -84,12 +97,17 @@ fun InicioSesionScreen(navController: NavController) {
 }
 
 /**
- * Vista previa para la pantalla de inicio de sesión.
+ * Proporciona una vista previa de la pantalla de inicio de sesión en el editor de Android Studio.
+ * La anotación `@Preview` permite visualizar el Composable sin necesidad de ejecutar la aplicación.
+ * Esto es muy útil para agilizar el diseño de la interfaz.
  */
 @Preview(showBackground = true)
 @Composable
 fun InicioSesionScreenPreview() {
+    // PaginaTheme envuelve la vista previa para aplicarle el tema de la aplicación (colores, fuentes, etc.).
     PaginaTheme {
+        // Se crea un NavController de prueba con `rememberNavController()`,
+        // ya que la vista previa no tiene un contexto de navegación real.
         InicioSesionScreen(rememberNavController())
     }
 }
