@@ -1,7 +1,7 @@
 package com.example.pagina.navegacion
 
 sealed class AppRorutas(val route: String) {
-
+    object Login : AppRorutas("/login")
     data object Registro: AppRorutas(route = "/registro")
 
     data class Detail (val itemId:String): AppRorutas(route = "detail/{itemId}")
