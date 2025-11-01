@@ -48,6 +48,14 @@ fun HomeScreen(navController: NavController) {
                         navController.navigate(AppRutas.Profile.route)
                     }
                 )
+                NavigationDrawerItem(
+                    label = { Text("Sobre Nosotros") },
+                    selected = false,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        navController.navigate(AppRutas.Nosotros.route)
+                    }
+                )
             }
         }
     ) {

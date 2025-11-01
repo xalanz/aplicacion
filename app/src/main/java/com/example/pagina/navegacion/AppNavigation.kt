@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pagina.pantallas.HomeScreen
+import com.example.pagina.pantallas.NosotrosScreen
 import com.example.pagina.pantallas.ProfileScreen
 import com.example.pagina.pantallas.SettingsScreen
 import com.example.pagina.registro_inicio.InicioSesionScreen
@@ -44,6 +45,10 @@ fun AppNavigation() {
 
         composable(route = AppRutas.Settings.route) {
             SettingsScreen()
+        }
+
+        composable(route = AppRutas.Nosotros.route) {
+            NosotrosScreen(navController)
         }
     }
 }
