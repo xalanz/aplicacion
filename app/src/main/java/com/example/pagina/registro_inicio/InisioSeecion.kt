@@ -25,7 +25,7 @@ import com.example.pagina.navegacion.AppRutas
 import com.example.pagina.ui.theme.PaginaTheme
 
 @Composable
-fun InicioSesionScreen(navController: NavController) {
+fun InicioSesionScreen(navController: NavController, onLoginSuccess: () -> Unit) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -58,7 +58,9 @@ fun InicioSesionScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = { 
-            // TODO: Lógica de autenticación
+            // En una app real, aquí verificarías el login.
+            // Si es exitoso, llamas a la función lambda.
+            onLoginSuccess()
         }) {
             Text("Iniciar Sesión")
         }
@@ -77,6 +79,7 @@ fun InicioSesionScreen(navController: NavController) {
 @Composable
 fun InicioSesionScreenPreview() {
     PaginaTheme {
-        InicioSesionScreen(rememberNavController())
+        // Para la vista previa, pasamos una función vacía para onLoginSuccess.
+        InicioSesionScreen(rememberNavController(), onLoginSuccess = {})
     }
 }

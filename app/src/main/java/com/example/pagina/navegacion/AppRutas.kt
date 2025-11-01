@@ -2,12 +2,9 @@ package com.example.pagina.navegacion
 
 sealed class AppRutas(val route: String) {
     object Welcome: AppRutas(route = "/welcome")
-    object Login: AppRutas(route = "/Login")
+    object Login: AppRutas(route = "/login")
     object Registro: AppRutas(route = "/registro")
-    data class Detail (val itemId:String): AppRutas(route = "detail/{itemId}")
-    {
-        fun buildRoute():String{
-            return route.replace("{itemId}",itemId)
-        }
-    }
+    object Home: AppRutas(route = "/home")
+    object Profile: AppRutas(route = "/profile")
+    object Settings: AppRutas(route = "/settings")
 }
