@@ -1,14 +1,14 @@
 package com.example.pagina.pantallas
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,95 +18,44 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.pagina.navegacion.AppRutas
 
+/**
+ * Pantalla que muestra información sobre la empresa o el proyecto.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NosotrosScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("") },
+                title = { Text("Sobre Nosotros") },
                 navigationIcon = {
+                    // Icono para volver a la pantalla anterior.
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                     }
                 }
             )
-        },
-        bottomBar = {
-            BottomAppBar {
-                Spacer(Modifier.weight(1f))
-                IconButton(onClick = { navController.navigate(AppRutas.Home.route) }) {
-                    Icon(Icons.Filled.Home, contentDescription = "Home")
-                }
-                Spacer(Modifier.weight(1f))
-            }
         }
     ) { innerPadding ->
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text("Sobre Nosotros", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Somos una tienda dedicada a ofrecer productos de alta calidad y brindar una atención excepcional a nuestros clientes. Nos esforzamos por entregar la mejor experiencia de compra, " +
-                        "cuidando cada detalle y seleccionando cuidadosamente nuestros producto viva el keznitdeus .",
-                fontSize = 16.sp
-            )
-            Spacer(modifier = Modifier.height(24.dp))
+            Text("Aquí va la información sobre nosotros.")
 
-            ProfileCard(
-                imageVector = Icons.Default.Person, // Placeholder, replace with your image: R.drawable.luis_paredes
-                name = "Alan Thomas ",
-                description = """jugador de lol ."""
-            )
+            Spacer(modifier = Modifier.height(32.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            ProfileCard(
-                imageVector = Icons.Default.Person, // Placeholder, replace with your image: R.drawable.lucas_olmedo
-                name = "Dayeil ",
-                description = """Exterminador profesional. Responsable de la gestión y la visión 
-                    |estratégica para  . Además, jugador de Valorant en mis tiempos libre'.""".trimMargin()
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(text = "Conecta con nosotros en nuestras redes sociales")
-        }
-    }
-}
-
-@Composable
-fun ProfileCard(imageVector: ImageVector, name: String, description: String) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
-        )
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                imageVector = imageVector,
-                contentDescription = name,
-                modifier = Modifier.size(80.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column {
-                Text(text = name, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                Text(text = description, fontSize = 14.sp)
+            // Botón para navegar a la pantalla de la Tienda.
+            Button(onClick = { navController.navigate(AppRutas.Tienda.route) }) {
+                Text("Ir a la Tienda")
             }
         }
     }

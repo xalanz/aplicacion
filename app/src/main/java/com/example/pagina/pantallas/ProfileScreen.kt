@@ -2,19 +2,50 @@ package com.example.pagina.pantallas
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.example.pagina.viewmodel.UserViewModel
 
+/**
+ * Pantalla de Perfil de Usuario.
+ * Muestra los datos del último usuario que se ha registrado.
+ */
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(viewModel: UserViewModel) {
+    // "collectAsState" observa el Flow del ViewModel y redibuja la pantalla automáticamente
+    // cada vez que los datos del último usuario cambian.
+    val latestUser by viewModel.latestUser.collectAsState()
+
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Pantalla de Perfil")
+        // Comprueba si existe un usuario. Si no, muestra un mensaje.
+        if (latestUser != null) {
+            Text("Perfil de Usuario", style = MaterialTheme.typography.headlineMedium)
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Nombre: ${latestUser!!.name}")
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Apellidos: ${latestUser!!.apellidos}")
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Correo: ${latestUser!!.email}")
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Dirección: ${latestUser!!.direccion}")
+        } else {
+            Text("No hay ningún usuario registrado.", style = MaterialTheme.typography.bodyLarge)
+        }
     }
 }

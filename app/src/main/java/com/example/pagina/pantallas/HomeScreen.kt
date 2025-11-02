@@ -1,6 +1,5 @@
 package com.example.pagina.pantallas
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,29 +27,36 @@ import androidx.navigation.NavController
 import com.example.pagina.navegacion.AppRutas
 import kotlinx.coroutines.launch
 
+/**
+ * Pantalla principal (Home) con una barra superior y un menú de navegación lateral.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController) {
+    // Estado para controlar si el menú lateral está abierto o cerrado.
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    // "Scope" para poder abrir y cerrar el menú con una corrutina.
     val scope = rememberCoroutineScope()
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
+            // Contenido del menú lateral.
             ModalDrawerSheet {
-                Text("Menu", Modifier.padding(16.dp))
+                Text("Menú", modifier = Modifier.padding(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 NavigationDrawerItem(
                     label = { Text("Ir al Perfil") },
                     selected = false,
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        navController.navigate(AppRutas.Profile.route)
+                    onClick = { 
+                        scope.launch { drawerState.close() } // Cierra el menú.
+                        navController.navigate(AppRutas.Profile.route) // Navega al perfil.
                     }
                 )
                 NavigationDrawerItem(
                     label = { Text("Sobre Nosotros") },
                     selected = false,
-                    onClick = {
+                    onClick = { 
                         scope.launch { drawerState.close() }
                         navController.navigate(AppRutas.Nosotros.route)
                     }
@@ -59,44 +64,39 @@ fun HomeScreen(navController: NavController) {
                 NavigationDrawerItem(
                     label = { Text("Tienda") },
                     selected = false,
-                    onClick = {
+                    onClick = { 
                         scope.launch { drawerState.close() }
                         navController.navigate(AppRutas.Tienda.route)
                     }
                 )
             }
         }
-    ) {
+    ) { 
+        // Contenido principal de la pantalla.
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = { Text("Pantalla Home") },
                     navigationIcon = {
-                        IconButton(onClick = {
+                        // Icono de menú (hamburguesa) que abre el menú lateral.
+                        IconButton(onClick = { 
                             scope.launch { drawerState.open() }
                         }) {
-                            Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
+                            Icon(Icons.Default.Menu, contentDescription = "Abrir menú")
                         }
                     }
                 )
             }
         ) { innerPadding ->
+            // El contenido que va dentro de la pantalla principal.
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Bienvenido a la página de Inicio")
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { navController.navigate(AppRutas.Settings.route) }) {
-                    Text("Ir a Ajustes")
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { navController.navigate(AppRutas.Tienda.route) }) {
-                    Text("Ir a Tienda")
-                }
+                Spacer(modifier = Modifier.height(32.dp))
+                Text("Bienvenido a la pantalla principal.")
             }
         }
     }

@@ -24,9 +24,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pagina.navegacion.AppRutas
 import com.example.pagina.ui.theme.PaginaTheme
 
+/**
+ * Pantalla de Inicio de Sesión.
+ * Permite a los usuarios existentes acceder a la aplicación.
+ */
 @Composable
 fun InisioSeecion(navController: NavController, onLoginSuccess: () -> Unit) {
 
+    // "remember" guarda el estado (el texto) del campo de correo electrónico aunque la pantalla se redibuje.
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -42,6 +47,7 @@ fun InisioSeecion(navController: NavController, onLoginSuccess: () -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Campo de texto para el correo.
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -49,6 +55,7 @@ fun InisioSeecion(navController: NavController, onLoginSuccess: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Campo de texto para la contraseña, con la visibilidad oculta.
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -57,9 +64,10 @@ fun InisioSeecion(navController: NavController, onLoginSuccess: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Botón que se activa cuando el usuario intenta iniciar sesión.
         Button(onClick = { 
-            // En una app real, aquí verificarías el login.
-            // Si es exitoso, llamas a la función lambda.
+            // En una app real, aquí se verificarían las credenciales con la base de datos.
+            // Si es exitoso, se llama a onLoginSuccess para navegar a la pantalla principal.
             onLoginSuccess()
         }) {
             Text("Iniciar Sesión")
@@ -67,6 +75,7 @@ fun InisioSeecion(navController: NavController, onLoginSuccess: () -> Unit) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Botón para redirigir a los nuevos usuarios a la pantalla de registro.
         Button(onClick = {
             navController.navigate(AppRutas.Registro.route)
         }) {
@@ -79,7 +88,6 @@ fun InisioSeecion(navController: NavController, onLoginSuccess: () -> Unit) {
 @Composable
 fun InisioSeecionPreview() {
     PaginaTheme {
-        // Para la vista previa, pasamos una función vacía para onLoginSuccess.
         InisioSeecion(rememberNavController(), onLoginSuccess = {})
     }
 }
