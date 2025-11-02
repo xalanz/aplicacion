@@ -25,7 +25,7 @@ import com.example.pagina.navegacion.AppRutas
 import com.example.pagina.ui.theme.PaginaTheme
 
 @Composable
-fun InicioSesionScreen(navController: NavController, onLoginSuccess: () -> Unit) {
+fun InisioSeecion(navController: NavController, onLoginSuccess: () -> Unit) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -77,9 +77,9 @@ fun InicioSesionScreen(navController: NavController, onLoginSuccess: () -> Unit)
 
 @Preview(showBackground = true)
 @Composable
-fun InicioSesionScreenPreview() {
+fun InisioSeecionPreview() {
     PaginaTheme {
         // Para la vista previa, pasamos una función vacía para onLoginSuccess.
-        InicioSesionScreen(rememberNavController(), onLoginSuccess = {})
+        InisioSeecion(rememberNavController(), onLoginSuccess = {})
     }
 }

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -25,9 +27,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+data class Producto(val name: String, val price: String)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TiendaScreen(navController: NavController) {
+    val productList = listOf(
+        Producto("Producto 1", "$19.99"),
+        Producto("Producto 2", "$29.99"),
+        Producto("Producto 3", "$39.99"),
+        Producto("Producto 4", "$49.99"),
+        Producto("Producto 5", "$59.99"),
+        Producto("Producto 6", "$69.99"),
+        Producto("Producto 7", "$79.99")
+    )
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -40,7 +54,7 @@ fun TiendaScreen(navController: NavController) {
             )
         }
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(16.dp)
@@ -48,23 +62,24 @@ fun TiendaScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            ProductCard(name = "Producto 1", price = "$19.99")
-            ProductCard(name = "Producto 2", price = "$29.99")
-            ProductCard(name = "Producto 3", price = "$39.99")
+            items(productList) { product ->
+                ProductoCard(name = product.name, price = product.price)
+            }
         }
     }
 }
 
 @Composable
-fun ProductCard(name: String, price: String) {
+fun ProductoCard(name: String, price: String) {
     Card(
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             // Placeholder for an image
-            Box(modifier = Modifier
-                .height(120.dp)
-                .fillMaxWidth()
+            Box(
+                modifier = Modifier
+                    .height(120.dp)
+                    .fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = name, fontWeight = FontWeight.Bold, fontSize = 20.sp)

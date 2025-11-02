@@ -60,25 +60,25 @@ fun NosotrosScreen(navController: NavController) {
             Text("Sobre Nosotros", fontSize = 24.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Somos una tienda dedicada a ofrecer productos de alta calida reiser ache pe y brindar una atencion a factorio fans hola.",
+                text = "Somos una tienda dedicada a ofrecer productos de alta calidad y brindar una atención excepcional a nuestros clientes. Nos esforzamos por entregar la mejor experiencia de compra, " +
+                        "cuidando cada detalle y seleccionando cuidadosamente nuestros producto viva el keznitdeus .",
                 fontSize = 16.sp
             )
             Spacer(modifier = Modifier.height(24.dp))
 
             ProfileCard(
                 imageVector = Icons.Default.Person, // Placeholder, replace with your image: R.drawable.luis_paredes
-                name = "Luis Paredes",
-                description = """Encargado de la fabrica
-Apasionado por armar el main bus en factorio."""
+                name = "Alan Thomas ",
+                description = """jugador de lol ."""
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             ProfileCard(
                 imageVector = Icons.Default.Person, // Placeholder, replace with your image: R.drawable.lucas_olmedo
-                name = "Lucas olmedo",
-                description = """Exterminador profesional
-Responsable de la gestión y la visión estratégica de expansion de la fabrica 'Mata bichos nomas'."""
+                name = "Dayeil ",
+                description = """Exterminador profesional. Responsable de la gestión y la visión 
+                    |estratégica para  . Además, jugador de Valorant en mis tiempos libre'.""".trimMargin()
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(text = "Conecta con nosotros en nuestras redes sociales")

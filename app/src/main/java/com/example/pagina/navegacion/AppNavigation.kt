@@ -10,8 +10,8 @@ import com.example.pagina.pantallas.NosotrosScreen
 import com.example.pagina.pantallas.ProfileScreen
 import com.example.pagina.pantallas.SettingsScreen
 import com.example.pagina.pantallas.TiendaScreen
-import com.example.pagina.registro_inicio.InicioSesionScreen
-import com.example.pagina.registro_inicio.RegistroScreen
+import com.example.pagina.registro_inicio.InisioSeecion
+import com.example.pagina.registro_inicio.Registro
 import com.example.pagina.registro_inicio.WelcomeScreen
 
 @Composable
@@ -25,7 +25,7 @@ fun AppNavigation() {
         }
 
         composable(route = AppRutas.Login.route) {
-            InicioSesionScreen(navController, onLoginSuccess = {
+            InisioSeecion(navController, onLoginSuccess = {
                 navController.navigate(AppRutas.Home.route) {
                     popUpTo(AppRutas.Welcome.route) { inclusive = true }
                 }
@@ -33,7 +33,7 @@ fun AppNavigation() {
         }
 
         composable(route = AppRutas.Registro.route) {
-            RegistroScreen(navController = navController, modifier = Modifier)
+            Registro(navController = navController, modifier = Modifier)
         }
 
         composable(route = AppRutas.Home.route) {

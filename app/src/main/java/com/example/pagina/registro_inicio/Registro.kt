@@ -24,7 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pagina.ui.theme.PaginaTheme
 
 @Composable
-fun RegistroScreen(navController: NavController, modifier: Modifier = Modifier) {
+fun Registro(navController: NavController, modifier: Modifier = Modifier) {
 
     var nombre by remember { mutableStateOf("") }
     var apellidos by remember { mutableStateOf("") }
@@ -96,8 +96,8 @@ fun RegistroScreen(navController: NavController, modifier: Modifier = Modifier) 
 
 @Preview(showBackground = true)
 @Composable
-fun RegistroScreenPreview() {
+fun RegistroPreview() {
     PaginaTheme {
-        RegistroScreen(rememberNavController())
+        Registro(rememberNavController())
     }
 }
