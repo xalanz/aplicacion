@@ -8,4 +8,5 @@ sealed class AppRutas(val route: String) {
     object Profile: AppRutas(route = "/profile")
     object Settings: AppRutas(route = "/settings")
     object Nosotros: AppRutas(route = "/nosotros")
+    object Tienda: AppRutas(route = "/tienda")
 }

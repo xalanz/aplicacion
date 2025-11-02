@@ -9,6 +9,7 @@ import com.example.pagina.pantallas.HomeScreen
 import com.example.pagina.pantallas.NosotrosScreen
 import com.example.pagina.pantallas.ProfileScreen
 import com.example.pagina.pantallas.SettingsScreen
+import com.example.pagina.pantallas.TiendaScreen
 import com.example.pagina.registro_inicio.InicioSesionScreen
 import com.example.pagina.registro_inicio.RegistroScreen
 import com.example.pagina.registro_inicio.WelcomeScreen
@@ -49,6 +50,10 @@ fun AppNavigation() {
 
         composable(route = AppRutas.Nosotros.route) {
             NosotrosScreen(navController)
+        }
+
+        composable(route = AppRutas.Tienda.route) {
+            TiendaScreen(navController)
         }
     }
 }

@@ -56,6 +56,14 @@ fun HomeScreen(navController: NavController) {
                         navController.navigate(AppRutas.Nosotros.route)
                     }
                 )
+                NavigationDrawerItem(
+                    label = { Text("Tienda") },
+                    selected = false,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        navController.navigate(AppRutas.Tienda.route)
+                    }
+                )
             }
         }
     ) {
@@ -84,6 +92,10 @@ fun HomeScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = { navController.navigate(AppRutas.Settings.route) }) {
                     Text("Ir a Ajustes")
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = { navController.navigate(AppRutas.Tienda.route) }) {
+                    Text("Ir a Tienda")
                 }
             }
         }

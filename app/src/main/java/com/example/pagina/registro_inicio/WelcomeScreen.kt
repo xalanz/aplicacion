@@ -24,7 +24,7 @@ fun WelcomeScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Text("LEVEL-UP GAMER", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+        Text("LEVEL-UP GAMER", fontSize = 32.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -40,6 +40,14 @@ fun WelcomeScreen(navController: NavController) {
             navController.navigate(AppRutas.Registro.route) 
         }) {
             Text("Registro")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = { 
+            navController.navigate(AppRutas.Tienda.route) 
+        }) {
+            Text("Tienda")
         }
     }
 }
