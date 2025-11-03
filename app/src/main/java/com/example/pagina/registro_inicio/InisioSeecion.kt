@@ -31,7 +31,7 @@ import com.example.pagina.ui.theme.PaginaTheme
 @Composable
 fun InisioSeecion(navController: NavController, onLoginSuccess: () -> Unit) {
 
-    // "remember" guarda el estado (el texto) del campo de correo electrónico aunque la pantalla se redibuje.
+    // "remember" guarda el estado (el texto) del campo de email aunque la pantalla se redibuje.
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -47,11 +47,11 @@ fun InisioSeecion(navController: NavController, onLoginSuccess: () -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campo de texto para el correo.
+        // Campo de texto para el email.
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Correo Electrónico") }
+            label = { Text("Email") }
         )
         Spacer(modifier = Modifier.height(8.dp))
 

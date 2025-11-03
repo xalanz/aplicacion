@@ -18,7 +18,7 @@ import com.example.pagina.viewmodel.UserViewModel
 
 /**
  * Pantalla de Perfil de Usuario.
- * Muestra los datos del último usuario que se ha registrado.
+ * Muestra los datos del último usuario registrado.
  */
 @Composable
 fun ProfileScreen(viewModel: UserViewModel) {
@@ -34,18 +34,19 @@ fun ProfileScreen(viewModel: UserViewModel) {
         verticalArrangement = Arrangement.Center
     ) {
         // Comprueba si existe un usuario. Si no, muestra un mensaje.
-        if (latestUser != null) {
+        val user = latestUser
+        if (user != null) {
             Text("Perfil de Usuario", style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Nombre: ${latestUser!!.name}")
+            Text("Nombre: ${user.name}")
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Apellidos: ${latestUser!!.apellidos}")
+            Text("Apellidos: ${user.apellidos}")
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Correo: ${latestUser!!.email}")
+            Text("Email: ${user.email}")
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Dirección: ${latestUser!!.direccion}")
+            Text("Dirección: ${user.direccion}")
         } else {
-            Text("No hay ningún usuario registrado.", style = MaterialTheme.typography.bodyLarge)
+            Text("Aún no hay ningún usuario registrado.", style = MaterialTheme.typography.bodyLarge)
         }
     }
 }

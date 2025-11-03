@@ -1,4 +1,5 @@
 package com.example.pagina.registro_inicio
+// FORCE RE-COMPILE
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

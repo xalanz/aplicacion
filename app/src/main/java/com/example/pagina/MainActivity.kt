@@ -1,4 +1,5 @@
 package com.example.pagina
+// FORCE RE-COMPILE
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -28,9 +29,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             PaginaTheme {
                 val viewModel: UserViewModel = viewModel(factory = factory)
-                // AHORA USAMOS LA NAVEGACIÓN PRINCIPAL
+                // NOW WE USE THE MAIN NAVIGATION
                 AppNavigation(viewModel = viewModel)
-            }
-        }
+            }        }
     }
 }

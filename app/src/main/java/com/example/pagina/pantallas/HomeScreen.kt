@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,14 +29,14 @@ import com.example.pagina.navegacion.AppRutas
 import kotlinx.coroutines.launch
 
 /**
- * Pantalla principal (Home) con una barra superior y un menú de navegación lateral.
+ * Pantalla principal (Home) con una barra de aplicación superior y un menú lateral de navegación.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController) {
     // Estado para controlar si el menú lateral está abierto o cerrado.
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    // "Scope" para poder abrir y cerrar el menú con una corrutina.
+    // Scope para poder abrir y cerrar el menú con una corrutina.
     val scope = rememberCoroutineScope()
 
     ModalNavigationDrawer(
@@ -46,15 +47,15 @@ fun HomeScreen(navController: NavController) {
                 Text("Menú", modifier = Modifier.padding(16.dp))
                 Spacer(modifier = Modifier.height(16.dp))
                 NavigationDrawerItem(
-                    label = { Text("Ir al Perfil") },
+                    label = { Text("Ir a Perfil") },
                     selected = false,
                     onClick = { 
                         scope.launch { drawerState.close() } // Cierra el menú.
-                        navController.navigate(AppRutas.Profile.route) // Navega al perfil.
+                        navController.navigate(AppRutas.Profile.route) // Navega a perfil.
                     }
                 )
                 NavigationDrawerItem(
-                    label = { Text("Sobre Nosotros") },
+                    label = { Text("Nosotros") },
                     selected = false,
                     onClick = { 
                         scope.launch { drawerState.close() }
@@ -76,7 +77,7 @@ fun HomeScreen(navController: NavController) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Pantalla Home") },
+                    title = { Text("Pantalla de Inicio") },
                     navigationIcon = {
                         // Icono de menú (hamburguesa) que abre el menú lateral.
                         IconButton(onClick = { 
@@ -97,6 +98,11 @@ fun HomeScreen(navController: NavController) {
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
                 Text("Bienvenido a la pantalla principal.")
+                Spacer(modifier = Modifier.height(16.dp))
+                // Botón para navegar a la pantalla de la Tienda.
+                Button(onClick = { navController.navigate(AppRutas.Tienda.route) }) {
+                    Text("Ir a la Tienda")
+                }
             }
         }
     }
