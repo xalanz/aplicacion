@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 class UserRepository(private val dao: UserDao) {
     val users: Flow<List<User>> = dao.getAllUsers()
-    val latestUser: Flow<User?> = dao.getLatestUser() // <-- AÑADIDO AQUÍ
+    val latestUser: Flow<User?> = dao.getLatestUser()
 
     suspend fun insert(user: User) = dao.insertUser(user)
     suspend fun update(user: User) = dao.updateUser(user)
