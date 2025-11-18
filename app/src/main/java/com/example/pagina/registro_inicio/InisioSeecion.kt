@@ -23,6 +23,21 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.pagina.navegacion.AppRutas
 import com.example.pagina.ui.theme.PaginaTheme
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.unit.dp
+
+
+
 
 /**
  * Pantalla de Inicio de Sesión.
@@ -31,58 +46,121 @@ import com.example.pagina.ui.theme.PaginaTheme
 @Composable
 fun InisioSeecion(navController: NavController, onLoginSuccess: () -> Unit) {
 
-    // "remember" guarda el estado (el texto) del campo de email aunque la pantalla se redibuje.
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    Column(
+    val fondo = Color(0xFF0A0B1F)
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(fondo),
+        contentAlignment = Alignment.Center
     ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-        Text("Inicio de Sesión")
+            Text(
+                "Inicio de Sesión",
+                color = Color.White,
+                fontSize = 28.sp    // Puedes cambiar 28 por 30, 32, etc.
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // Campo de texto para el email.
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") }
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") }
+            )
 
-        // Campo de texto para la contraseña, con la visibilidad oculta.
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Contraseña") },
-            visualTransformation = PasswordVisualTransformation()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-        // Botón que se activa cuando el usuario intenta iniciar sesión.
-        Button(onClick = { 
-            // En una app real, aquí se verificarían las credenciales con la base de datos.
-            // Si es exitoso, se llama a onLoginSuccess para navegar a la pantalla principal.
-            onLoginSuccess()
-        }) {
-            Text("Iniciar Sesión")
-        }
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Contraseña") },
+                visualTransformation = PasswordVisualTransformation()
+            )
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón para redirigir a los nuevos usuarios a la pantalla de registro.
-        Button(onClick = {
-            navController.navigate(AppRutas.Registro.route)
-        }) {
-            Text("¿No tienes cuenta? Regístrate")
+            Button(
+                onClick = { onLoginSuccess() },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent   // <-- AQUÍ CAMBIA EL COLOR BASE DEL BOTÓN
+                ),
+                contentPadding = PaddingValues(),       // <-- NECESARIO PARA QUE EL degradado cubra todo
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(55.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFF9D4EDD), // <-- Morado eléctrico brillante
+                                    Color(0xFF7B2CBF)  // <-- Morado profundo
+                                )
+                            ),
+                            RoundedCornerShape(12.dp)     // <-- Bordes redondeados
+                        )
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Iniciar Sesión",
+                        color = Color.White
+                    )
+                }
+            }
+
+
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = {
+                    navController.navigate(AppRutas.Registro.route)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent   // <-- AQUÍ TAMBIÉN
+                ),
+                contentPadding = PaddingValues(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(55.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFF9D4EDD), // <-- Morado eléctrico brillante
+                                    Color(0xFF7B2CBF)  // <-- Morado profundo
+                                )
+                            ),
+                            RoundedCornerShape(12.dp)
+                        )
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "¿No tienes cuenta? Regístrate",
+                        color = Color.White
+                    )
+                }
+            }
+
+
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

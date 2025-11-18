@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 fun WelcomeScreen(navController: NavController) {
 
     // Colores inspirados en el diseño neomórfico del kit UI
-    val fondo = Color(0xFF0A0B1F)    // gris pastel muy claro
+    val fondo = Color(0xFF0A0B1F)
     val sombraClara = Color.White
     val sombraOscura = Color(0xFFB7BEC8)
     val acento = Color(0xFF86A8E7)      // azul suave estilo neomórfico
