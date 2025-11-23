@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.pagina.pantallas.CartScreen
 import com.example.pagina.pantallas.HomeScreen
 import com.example.pagina.pantallas.NosotrosScreen
 import com.example.pagina.pantallas.ProfileScreen
@@ -13,6 +14,7 @@ import com.example.pagina.pantallas.TiendaScreen
 import com.example.pagina.registro_inicio.InisioSeecion
 import com.example.pagina.registro_inicio.Registro
 import com.example.pagina.registro_inicio.WelcomeScreen
+import com.example.pagina.viewmodel.ProductViewModel
 import com.example.pagina.viewmodel.UserViewModel
 
 /**
@@ -20,7 +22,7 @@ import com.example.pagina.viewmodel.UserViewModel
  * Es el "controlador de tráfico" que decide qué pantalla mostrar.
  */
 @Composable
-fun AppNavigation(viewModel: UserViewModel) {
+fun AppNavigation(userViewModel: UserViewModel, productViewModel: ProductViewModel) {
     // El NavController es el responsable de gestionar la pila de navegación (back stack).
     val navController = rememberNavController()
 
@@ -45,7 +47,7 @@ fun AppNavigation(viewModel: UserViewModel) {
 
         composable(route = AppRutas.Registro.route) {
             // Se pasa el ViewModel a la pantalla de Registro para que pueda guardar los datos.
-            Registro(navController = navController, viewModel = viewModel, modifier = Modifier)
+            Registro(navController = navController, viewModel = userViewModel, modifier = Modifier)
         }
 
         composable(route = AppRutas.Home.route) {
@@ -54,7 +56,7 @@ fun AppNavigation(viewModel: UserViewModel) {
 
         composable(route = AppRutas.Profile.route) {
             // Se pasa el ViewModel a la pantalla de Perfil para que pueda mostrar los datos.
-            ProfileScreen(viewModel = viewModel)
+            ProfileScreen(viewModel = userViewModel)
         }
 
         composable(route = AppRutas.Settings.route) {
@@ -66,7 +68,11 @@ fun AppNavigation(viewModel: UserViewModel) {
         }
 
         composable(route = AppRutas.Tienda.route) {
-            TiendaScreen(navController)
+            TiendaScreen(navController = navController, productViewModel = productViewModel)
+        }
+
+        composable(route = AppRutas.Cart.route) {
+            CartScreen(navController = navController, productViewModel = productViewModel)
         }
     }
 }
