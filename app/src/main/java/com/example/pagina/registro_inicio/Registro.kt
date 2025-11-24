@@ -23,6 +23,25 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.pagina.ui.theme.PaginaTheme
 import com.example.pagina.viewmodel.UserViewModel
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.foundation.layout.width
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Pantalla de Registro de nuevos usuarios.
@@ -89,42 +108,152 @@ fun RegistroForm(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(Color(0xFF0A0B1F))
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Formulario de Registro")
+
+    Text("Formulario de Registro",
+        color = Color.White)
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(value = nombre, onValueChange = onNombreChange, label = { Text("Nombre") })
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = apellidos, onValueChange = onApellidosChange, label = { Text("Apellidos") })
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = correo, onValueChange = onCorreoChange, label = { Text("Correo electrónico") })
+        OutlinedTextField(
+            value = nombre,
+            onValueChange = onNombreChange,
+            label = { Text("Nombre", color = Color.White) },
+            textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                cursorColor = Color.White,
+                focusedContainerColor = Color.Transparent,   // 🔹 Fondo transparente
+                unfocusedContainerColor = Color.Transparent, // 🔹 Fondo transparente
+                disabledContainerColor = Color.Transparent,  // 🔹 Fondo transparente
+                errorContainerColor = Color.Transparent      // 🔹 Fondo transparente
+            )
+        )
+
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-            value = password, 
-            onValueChange = onPasswordChange, 
-            label = { Text("Contraseña") }, 
-            visualTransformation = PasswordVisualTransformation()
+            value = apellidos,
+            onValueChange = onApellidosChange,
+            label = { Text("Apellido", color = Color.White) },
+            textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                cursorColor = Color.White,
+                focusedContainerColor = Color.Transparent,   // 🔹 Fondo transparente
+                unfocusedContainerColor = Color.Transparent, // 🔹 Fondo transparente
+                disabledContainerColor = Color.Transparent,  // 🔹 Fondo transparente
+                errorContainerColor = Color.Transparent      // 🔹 Fondo transparente
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-            value = verifyPassword, 
-            onValueChange = onVerifyPasswordChange, 
-            label = { Text("Verificar contraseña") }, 
-            visualTransformation = PasswordVisualTransformation()
+            value = correo,
+            onValueChange = onCorreoChange,
+            label = { Text("Correo electronico", color = Color.White) },
+            textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                cursorColor = Color.White,
+                focusedContainerColor = Color.Transparent,   // 🔹 Fondo transparente
+                unfocusedContainerColor = Color.Transparent, // 🔹 Fondo transparente
+                disabledContainerColor = Color.Transparent,  // 🔹 Fondo transparente
+                errorContainerColor = Color.Transparent      // 🔹 Fondo transparente
+            )
         )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = direccion, onValueChange = onDireccionChange, label = { Text("Dirección") })
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = password,
+            onValueChange = onPasswordChange,
+            label = { Text("Contraseña", color = Color.White) },
+            visualTransformation = PasswordVisualTransformation(),
+            textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                cursorColor = Color.White,
+                focusedContainerColor = Color.Transparent,   // 🔹 Fondo transparente
+                unfocusedContainerColor = Color.Transparent, // 🔹 Fondo transparente
+                disabledContainerColor = Color.Transparent,  // 🔹 Fondo transparente
+                errorContainerColor = Color.Transparent      // 🔹 Fondo transparente
+            )
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = verifyPassword,
+            onValueChange = onVerifyPasswordChange,
+            label = { Text("Verificar contraseña", color = Color.White) },
+            visualTransformation = PasswordVisualTransformation(),
+            textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                cursorColor = Color.White,
+                focusedContainerColor = Color.Transparent,   // 🔹 Fondo transparente
+                unfocusedContainerColor = Color.Transparent, // 🔹 Fondo transparente
+                disabledContainerColor = Color.Transparent,  // 🔹 Fondo transparente
+                errorContainerColor = Color.Transparent      // 🔹 Fondo transparente
+            )
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = direccion,
+            onValueChange = onDireccionChange,
+            label = { Text("Direccion", color = Color.White) },
+            visualTransformation = PasswordVisualTransformation(),
+            textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                cursorColor = Color.White,
+                focusedContainerColor = Color.Transparent,   // 🔹 Fondo transparente
+                unfocusedContainerColor = Color.Transparent, // 🔹 Fondo transparente
+                disabledContainerColor = Color.Transparent,  // 🔹 Fondo transparente
+                errorContainerColor = Color.Transparent      // 🔹 Fondo transparente
+            )
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = onRegisterClick,
-            enabled = isFormValid
+
+        Box(
+            modifier = Modifier
+                .width(220.dp)                    // 🔹 Ancho reducido
+                .height(48.dp)                    // 🔹 Alto reducido
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFF7B2FF7),    // Morado eléctrico
+                            Color(0xFF9C4DFF),    // Morado brillante
+                            Color(0xFFC084FC)     // Lila luminoso
+                        )
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                )
         ) {
-            Text("Registrarse")
+            Button(
+                onClick = onRegisterClick,
+                modifier = Modifier.fillMaxSize(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,  // Fondo transparente (deja ver el degradado)
+                    contentColor = Color.White           // Texto blanco
+                ),
+                elevation = null
+            ) {
+                Text("Registrarse")
+            }
         }
+
     }
-}
+
+
+    }
+
 
 @Preview(showBackground = true)
 @Composable
