@@ -56,7 +56,12 @@ import kotlinx.coroutines.launch
 // Colores para el nuevo diseño
 private val DarkPrimary = Color(0xFF1F222A)
 private val DarkSecondary = Color(0xFF2A2D36)
-private val GoldAccent = Color(0xFFFFC107)
+private val PurpleAccent = Color(0xFF7B2FF7)
+
+
+private val Purple1 = Color(0xFF7B2FF7) // Morado eléctrico
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,17 +72,22 @@ fun HomeScreen(navController: NavController) {
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet(
+                drawerContainerColor = Color.DarkGray,
+                modifier = Modifier
+                    .fillMaxSize() // ✔ FONDO SÓLIDO AQUÍ
+            )
+            {
                 Spacer(Modifier.height(12.dp))
                 NavigationDrawerItem(
-                    icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
-                    label = { Text("Home") },
-                    selected = true, // Marcamos Home como la pantalla actual
+                    icon = { Icon(Icons.Default.Home, contentDescription = "Home", tint = Color.White) },
+                    label = { Text("Home", color = Color.White) },
+                    selected = true,
                     onClick = { scope.launch { drawerState.close() } }
                 )
                 NavigationDrawerItem(
-                    icon = { Icon(Icons.Filled.ShoppingCart, contentDescription = "Tienda") },
-                    label = { Text("Tienda") },
+                    icon = { Icon(Icons.Filled.ShoppingCart, contentDescription = "Tienda", tint = Color.White) },
+                    label = { Text("Tienda", color = Color.White) },
                     selected = false,
                     onClick = {
                         scope.launch { drawerState.close() }
@@ -85,8 +95,8 @@ fun HomeScreen(navController: NavController) {
                     }
                 )
                 NavigationDrawerItem(
-                    icon = { Icon(Icons.Filled.Info, contentDescription = "Nosotros") },
-                    label = { Text("Nosotros") },
+                    icon = { Icon(Icons.Filled.Info, contentDescription = "Nosotros", tint = Color.White) },
+                    label = { Text("Nosotros", color = Color.White) },
                     selected = false,
                     onClick = {
                         scope.launch { drawerState.close() }
@@ -94,8 +104,8 @@ fun HomeScreen(navController: NavController) {
                     }
                 )
                 NavigationDrawerItem(
-                    icon = { Icon(Icons.Filled.AccountCircle, contentDescription = "Perfil") },
-                    label = { Text("Perfil") },
+                    icon = { Icon(Icons.Filled.AccountCircle, contentDescription = "Perfil", tint = Color.White) },
+                    label = { Text("Perfil", color = Color.White) },
                     selected = false,
                     onClick = {
                         scope.launch { drawerState.close() }
@@ -104,7 +114,9 @@ fun HomeScreen(navController: NavController) {
                 )
             }
         }
-    ) {
+    )
+
+    {
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -186,7 +198,7 @@ fun WelcomeCard() {
             Icon(
                 imageVector = Icons.Filled.Star,
                 contentDescription = "Gaming Icon",
-                tint = GoldAccent,
+                tint = PurpleAccent,
                 modifier = Modifier.size(48.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -228,7 +240,7 @@ fun NavigationCard(icon: ImageVector, title: String, subtitle: String, onClick: 
                         .clip(CircleShape)
                         .background(
                             Brush.verticalGradient(
-                                listOf(GoldAccent.copy(alpha = 0.4f), DarkPrimary)
+                                listOf(Purple1.copy(alpha = 0.4f), DarkPrimary)
                             )
                         ),
                     contentAlignment = Alignment.Center
@@ -236,7 +248,7 @@ fun NavigationCard(icon: ImageVector, title: String, subtitle: String, onClick: 
                     Icon(
                         imageVector = icon,
                         contentDescription = title,
-                        tint = GoldAccent,
+                        tint = Purple1,
                         modifier = Modifier.size(28.dp)
                     )
                 }
@@ -250,7 +262,7 @@ fun NavigationCard(icon: ImageVector, title: String, subtitle: String, onClick: 
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = "Navegar",
-                tint = GoldAccent
+                tint = Purple1
             )
         }
     }

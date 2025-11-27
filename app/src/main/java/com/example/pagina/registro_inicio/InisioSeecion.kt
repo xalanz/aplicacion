@@ -77,6 +77,7 @@ fun InisioSeecion(navController: NavController, onLoginSuccess: () -> Unit) {
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") }
+
             )
 
             Spacer(modifier = Modifier.height(8.dp))
