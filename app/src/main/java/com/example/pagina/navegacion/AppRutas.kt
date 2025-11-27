@@ -45,4 +45,7 @@ sealed class AppRutas(val route: String) {
 
     // Pantalla del carrito de compras.
     object Cart: AppRutas("/cart")
+
+    // Pantalla de eventos.
+    object Eventos: AppRutas("/eventos")
 }

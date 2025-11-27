@@ -154,7 +154,7 @@ fun HomeScreen(navController: NavController) {
                     icon = Icons.Filled.Star,
                     title = "Eventos",
                     subtitle = "Descubre eventos próximos",
-                    onClick = { /* TODO: Navegar a la pantalla de Eventos cuando exista */ }
+                    onClick = { navController.navigate(AppRutas.Eventos.route) } // CORREGIDO
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
