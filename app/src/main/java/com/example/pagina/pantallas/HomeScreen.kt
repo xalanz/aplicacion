@@ -1,27 +1,62 @@
 package com.example.pagina.pantallas
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.*
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.pagina.navegacion.AppRutas
 import kotlinx.coroutines.launch
+
+// Colores para el nuevo diseño
+private val DarkPrimary = Color(0xFF1F222A)
+private val DarkSecondary = Color(0xFF2A2D36)
+private val GoldAccent = Color(0xFFFFC107)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,18 +68,24 @@ fun HomeScreen(navController: NavController) {
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                Text("Menú", modifier = Modifier.padding(16.dp))
-                Spacer(modifier = Modifier.height(16.dp))
-
+                Spacer(Modifier.height(12.dp))
                 NavigationDrawerItem(
-                    label = { Text("Ir a Perfil") },
+                    icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
+                    label = { Text("Home") },
+                    selected = true, // Marcamos Home como la pantalla actual
+                    onClick = { scope.launch { drawerState.close() } }
+                )
+                NavigationDrawerItem(
+                    icon = { Icon(Icons.Filled.ShoppingCart, contentDescription = "Tienda") },
+                    label = { Text("Tienda") },
                     selected = false,
                     onClick = {
                         scope.launch { drawerState.close() }
-                        navController.navigate(AppRutas.Profile.route)
+                        navController.navigate(AppRutas.Tienda.route)
                     }
                 )
                 NavigationDrawerItem(
+                    icon = { Icon(Icons.Filled.Info, contentDescription = "Nosotros") },
                     label = { Text("Nosotros") },
                     selected = false,
                     onClick = {
@@ -53,11 +94,12 @@ fun HomeScreen(navController: NavController) {
                     }
                 )
                 NavigationDrawerItem(
-                    label = { Text("Tienda") },
+                    icon = { Icon(Icons.Filled.AccountCircle, contentDescription = "Perfil") },
+                    label = { Text("Perfil") },
                     selected = false,
                     onClick = {
                         scope.launch { drawerState.close() }
-                        navController.navigate(AppRutas.Tienda.route)
+                        navController.navigate(AppRutas.Profile.route)
                     }
                 )
             }
@@ -66,80 +108,150 @@ fun HomeScreen(navController: NavController) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Inicio", color = Color.White) },
+                    title = { Text("Level Up Gaming", color = Color.White, fontWeight = FontWeight.Bold) },
                     navigationIcon = {
                         IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Abrir menú", tint = Color.White)
+                            Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White)
                         }
                     },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color(0xFF0A0B1F)
-                    )
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = DarkPrimary)
                 )
-            }
+            },
+            containerColor = DarkPrimary
         ) { innerPadding ->
-
             Column(
                 modifier = Modifier
-                    .padding(innerPadding)
                     .fillMaxSize()
-                    .background(Color(0xFF0A0B1F)), // Fondo oscuro lindo
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                    .padding(innerPadding)
+                    .padding(16.dp)
             ) {
-
+                // Saludo principal
                 Text(
-                    text = "👾",
-                    fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+                    text = "Hola, ¡qué bueno verte!",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
                 )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Tarjeta de bienvenida principal
+                WelcomeCard()
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Tarjetas de navegación
+                NavigationCard(
+                    icon = Icons.Filled.ShoppingCart,
+                    title = "Tienda",
+                    subtitle = "Explora nuestros productos",
+                    onClick = { navController.navigate(AppRutas.Tienda.route) }
+                )
+
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // ⭐ Frase motivadora
-                Text(
-                    text = "Construye tu mejor versión.",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
+                NavigationCard(
+                    icon = Icons.Filled.Star,
+                    title = "Eventos",
+                    subtitle = "Descubre eventos próximos",
+                    onClick = { /* TODO: Navegar a la pantalla de Eventos cuando exista */ }
                 )
 
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = "Cada paso cuenta.",
-                    color = Color(0xFFC084FC),
+                NavigationCard(
+                    icon = Icons.Filled.AccountCircle,
+                    title = "Perfil",
+                    subtitle = "Tu información",
+                    onClick = { navController.navigate(AppRutas.Profile.route) }
                 )
-
-                Spacer(modifier = Modifier.height(40.dp))
-
-                // ⭐ Botón degradado brillante
-                Box(
-                    modifier = Modifier
-                        .width(220.dp)
-                        .height(50.dp)
-                        .background(
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color(0xFF7B2FF7),
-                                    Color(0xFF9C4DFF),
-                                    Color(0xFFC084FC)
-                                )
-                            ),
-                            shape = RoundedCornerShape(14.dp)
-                        )
-                ) {
-                    Button(
-                        onClick = { navController.navigate(AppRutas.Tienda.route) },
-                        modifier = Modifier.fillMaxSize(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = Color.White
-                        ),
-                        elevation = null
-                    ) {
-                        Text("Ir a la Tienda")
-                    }
-                }
             }
         }
     }
 }
 
+@Composable
+fun WelcomeCard() {
+    Card(
+        shape = RoundedCornerShape(20.dp),
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = DarkSecondary)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 24.dp, horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Star,
+                contentDescription = "Gaming Icon",
+                tint = GoldAccent,
+                modifier = Modifier.size(48.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "¡Bienvenido a Level Up Gaming!",
+                color = Color.White,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Tu destino para productos gaming",
+                color = Color.Gray,
+                fontSize = 16.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun NavigationCard(icon: ImageVector, title: String, subtitle: String, onClick: () -> Unit) {
+    Card(
+        shape = RoundedCornerShape(20.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = DarkSecondary)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                // Contenedor del icono
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(GoldAccent.copy(alpha = 0.4f), DarkPrimary)
+                            )
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = title,
+                        tint = GoldAccent,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Column(modifier = Modifier.padding(start = 16.dp)) {
+                    Text(text = title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text(text = subtitle, color = Color.Gray, fontSize = 14.sp)
+                }
+            }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                contentDescription = "Navegar",
+                tint = GoldAccent
+            )
+        }
+    }
+}
