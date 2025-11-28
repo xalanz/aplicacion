@@ -34,6 +34,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.layout.Box
+
+
+
+
+
+
 
 /**
  * Pantalla que muestra información sobre la empresa o el proyecto.
@@ -44,22 +56,41 @@ import androidx.navigation.NavController
 @Composable
 fun NosotrosScreen(navController: NavController) {
     Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF7B2FF7),
+                        Color(0xFF9A4DFF),
+                        Color(0xFFB86BFF)
+                    )
+                )
+            ),
         topBar = {
             TopAppBar(
-                title = { Text("Sobre Nosotros") },
+                title = { Text("Sobre Nosotros",color = Color.White)},
                 navigationIcon = {
                     // Icono para volver a la pantalla anterior.
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver",tint = Color.White
+                        )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF1F222A),   //
+                    titleContentColor = Color.White,      // ⭐ Texto blanco
+                    navigationIconContentColor = Color.White  // ⭐ Flecha blanca
+                )
             )
+
         }
     ) { innerPadding ->
         // Contenido principal de la pantalla con scroll vertical.
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color(0xFF1F222A))
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
                 .padding(16.dp),
@@ -67,13 +98,14 @@ fun NosotrosScreen(navController: NavController) {
             verticalArrangement = Arrangement.Top
         ) {
             // Título de la sección.
-            Text("Sobre Nosotros", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            Text("Sobre Nosotros", fontSize = 24.sp, fontWeight = FontWeight.Bold,color = Color.White )
             Spacer(modifier = Modifier.height(16.dp))
             // Texto descriptivo de la empresa.
             Text(
                 text = "Somos una tienda dedicada a ofrecer productos de alta calidad y brindar una atención excepcional a nuestros clientes. Nos esforzamos por entregar la mejor experiencia de compra, " +
                         "cuidando cada detalle y seleccionando cuidadosamente nuestros producto viva el keznitdeus .",
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                color = Color.White
             )
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -81,7 +113,7 @@ fun NosotrosScreen(navController: NavController) {
             ProfileCard(
                 imageVector = Icons.Default.Person, // Placeholder, replace with your image: R.drawable.luis_paredes
                 name = "Alan Thomas ",
-                description = "jugador de lol ."
+                description = "Experto en League of Legends y en el mundo gaming, Alan Thomas gestiona la tienda y busca siempre lo mejor para la comunidad."
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -89,12 +121,9 @@ fun NosotrosScreen(navController: NavController) {
             // Tarjeta de perfil para el segundo miembro del equipo.
             ProfileCard(
                 imageVector = Icons.Default.Person, // Placeholder, replace with your image: R.drawable.lucas_olmedo
-                name = "Dayeil ",
-                description = "Exterminador profesional. Responsable de la gestión y la visión estratégica para  . Además, jugador de Valorant en mis tiempos libre'."
+                name = "Dayelin ",
+                description = "Jugadora de Valorant y coordinadora de eventos de la tienda, Dayelin asegura experiencias únicas para la comunidad gamer."
             )
-            Spacer(modifier = Modifier.height(24.dp))
-            // Texto para conectar en redes sociales.
-            Text(text = "Conecta con nosotros en nuestras redes sociales")
         }
     }
 }
@@ -109,13 +138,29 @@ fun NosotrosScreen(navController: NavController) {
 @Composable
 fun ProfileCard(imageVector: ImageVector, name: String, description: String) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp)
+        modifier = Modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(30.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent) // Card transparente
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Box(
+            modifier = Modifier
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFF7B2FF7), // Morado eléctrico
+                            Color(0xFFBA68C8)  // Morado más claro
+                        )
+                    )
+                )
+                .clip(RoundedCornerShape(30.dp)) // ⭐ Clip aquí
         ) {
+            Row(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
             // Imagen de perfil.
             Image(
                 imageVector = imageVector,
@@ -128,9 +173,10 @@ fun ProfileCard(imageVector: ImageVector, name: String, description: String) {
             Spacer(modifier = Modifier.width(16.dp))
             // Columna con el nombre y la descripción.
             Column {
-                Text(text = name, fontWeight = FontWeight.Bold)
-                Text(text = description)
+                Text(text = name, fontWeight = FontWeight.Bold, color = Color.White)
+                Text(text = description,color = Color.White)
             }
         }
     }
-}
+        }
+        }

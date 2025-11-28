@@ -34,6 +34,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.unit.dp
 
 
@@ -72,12 +73,20 @@ fun InisioSeecion(navController: NavController, onLoginSuccess: () -> Unit) {
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email") }
-
+                label = { Text("Nombre", color = Color.White) },
+                textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    cursorColor = Color.White,
+                    focusedContainerColor = Color.Transparent,   // 🔹 Fondo transparente
+                    unfocusedContainerColor = Color.Transparent, // 🔹 Fondo transparente
+                    disabledContainerColor = Color.Transparent,  // 🔹 Fondo transparente
+                    errorContainerColor = Color.Transparent      // 🔹 Fondo transparente
+                )
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -85,10 +94,18 @@ fun InisioSeecion(navController: NavController, onLoginSuccess: () -> Unit) {
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Contraseña") },
-                visualTransformation = PasswordVisualTransformation()
+                label = { Text("Contraseña" , color = Color.White)},
+                visualTransformation = PasswordVisualTransformation(),
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    cursorColor = Color.White,
+                    focusedContainerColor = Color.Transparent,   // 🔹 Fondo transparente
+                    unfocusedContainerColor = Color.Transparent, // 🔹 Fondo transparente
+                    disabledContainerColor = Color.Transparent,  // 🔹 Fondo transparente
+                    errorContainerColor = Color.Transparent      // 🔹 Fondo transparente
             )
-
+            )
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
