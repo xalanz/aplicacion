@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil.compose)
+    implementation("androidx.compose.material:material-icons-extended")
 
     // Room
     implementation(libs.androidx.room.runtime)

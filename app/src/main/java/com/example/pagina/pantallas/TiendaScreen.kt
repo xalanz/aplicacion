@@ -1,7 +1,10 @@
 package com.example.pagina.pantallas
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -15,17 +18,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -39,7 +48,6 @@ import com.example.pagina.data.local.Product
 import com.example.pagina.navegacion.AppRutas
 import com.example.pagina.viewmodel.ProductViewModel
 
-// Lista de productos de ejemplo disponibles en la tienda.
 val availableProducts = listOf(
     Product(productName = "Teclado Gamer", price = 69.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.teclado_1),
     Product(productName = "Monitor Curvo", price = 299.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.monitor1),
@@ -56,15 +64,18 @@ fun TiendaScreen(navController: NavController, productViewModel: ProductViewMode
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Catálogo de Productos") },
+                title = { Text("Catálogo de Productos", color = Color.White) },
                 actions = {
-                    // Icono del carrito que navega a la pantalla del carrito.
                     IconButton(onClick = { navController.navigate(AppRutas.Cart.route) }) {
-                        Icon(Icons.Default.ShoppingCart, contentDescription = "Ver carrito")
+                        Icon(Icons.Default.ShoppingCart, contentDescription = "Ver carrito", tint = Color.White)
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF1F222A)
+                )
             )
-        }
+        },
+        containerColor = Color(0xFF1F222A)
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -75,7 +86,6 @@ fun TiendaScreen(navController: NavController, productViewModel: ProductViewMode
         ) {
             items(availableProducts) { product ->
                 ProductoCard(product = product, onAddToCart = {
-                    // Llama al ViewModel para añadir el producto a la base de datos.
                     productViewModel.addProductToCart(product)
                 })
             }
@@ -87,7 +97,9 @@ fun TiendaScreen(navController: NavController, productViewModel: ProductViewMode
 fun ProductoCard(product: Product, onAddToCart: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF2A2D37))
     ) {
         Column {
             AsyncImage(
@@ -110,12 +122,32 @@ fun ProductoCard(product: Product, onAddToCart: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(text = product.productName, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    Text(text = product.productName, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Color.White)
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = "$${String.format("%.2f", product.price)}", fontSize = 18.sp)
+                    Text(text = "$${String.format("%.2f", product.price)}", fontSize = 18.sp, color = Color.Gray)
                 }
-                Button(onClick = onAddToCart) {
-                    Text("Añadir al Carrito")
+                Button(
+                    onClick = onAddToCart,
+                    shape = RoundedCornerShape(8.dp),
+                    contentPadding = PaddingValues(),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color(0xFF6A1BBE),
+                                        Color(0xFF8A2BE2)
+                                    )
+                                ),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Añadir al Carrito", color = Color.White)
+                    }
                 }
             }
         }
