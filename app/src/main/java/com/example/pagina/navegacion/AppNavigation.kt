@@ -85,7 +85,8 @@ fun AppNavigation(
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }
                         launchSingleTop = true
                     }
-                }
+                },
+                onBack = { navController.popBackStack() } // Añadido el parámetro onBack
             )
         }
 

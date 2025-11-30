@@ -1,5 +1,8 @@
 package com.example.pagina.pantallas
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,32 +25,119 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import coil.compose.rememberAsyncImagePainter
 import com.example.pagina.viewmodel.UserViewModel
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 val gradientColors = listOf(Color(0xFF6A1BBE), Color(0xFF345C8C))
+
+// Function to create a temporary image file
+fun createImageFile(context: Context): File {
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+    val imageFileName = "JPEG_" + timeStamp + "_"
+    return File.createTempFile(
+        imageFileName, /* prefix */
+        ".jpg", /* suffix */
+        context.externalCacheDir /* directory */
+    )
+}
 
 @Composable
 fun ProfileScreen(
     viewModel: UserViewModel,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onBack: () -> Unit // Nuevo parámetro para la acción de retroceso
 ) {
-    // NOTA: Para que esto funcione, necesitamos el ID del usuario que ha iniciado sesión.
-    // Asumiremos que el ViewModel lo gestionará internamente por ahora.
-    val currentUser by viewModel.latestUser.collectAsState() // Esto deberá cambiar por el usuario actual
+    val currentUser by viewModel.latestUser.collectAsState()
 
     var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var tempCameraUri by remember { mutableStateOf<Uri?>(null) }
+    var showDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        imageUri = uri
+        if (uri != null) {
+            imageUri = uri
+        }
+    }
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            imageUri = tempCameraUri
+        }
+    }
+
+    fun createImageUri(): Uri {
+        val file = createImageFile(context)
+        return FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider",
+            file
+        )
+    }
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            val newUri = createImageUri()
+            tempCameraUri = newUri
+            cameraLauncher.launch(newUri)
+        } else {
+            // Handle the case where the user denies the permission
+        }
     }
 
     val name = currentUser?.name ?: ""
     val lastName = currentUser?.apellidos ?: ""
     val email = currentUser?.email ?: ""
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Seleccionar imagen") },
+            text = { Text("¿Desde dónde quieres seleccionar la imagen?") },
+            confirmButton = {
+                Button(onClick = {
+                    galleryLauncher.launch("image/*")
+                    showDialog = false
+                }) {
+                    Text("Galería")
+                }
+            },
+            dismissButton = {
+                Button(onClick = {
+                    showDialog = false
+                    when (PackageManager.PERMISSION_GRANTED) {
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.CAMERA
+                        ) -> {
+                            val newUri = createImageUri()
+                            tempCameraUri = newUri
+                            cameraLauncher.launch(newUri)
+                        }
+                        else -> {
+                            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                        }
+                    }
+                }) {
+                    Text("Cámara")
+                }
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -73,6 +163,7 @@ fun ProfileScreen(
                     modifier = Modifier
                         .size(24.dp)
                         .align(Alignment.CenterStart)
+                        .clickable { onBack() } // La flecha ahora es clicleable
                 )
                 Text(
                     text = "Perfil de usuario",
@@ -87,43 +178,50 @@ fun ProfileScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(top = 100.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(90.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF1E1E2C))
-                        .clickable { galleryLauncher.launch("image/*") },
-                    contentAlignment = Alignment.Center
+                Column( // Wrapper Column
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.clickable { showDialog = true }
                 ) {
-                    if (imageUri != null) {
-                        Image(
-                            painter = rememberAsyncImagePainter(imageUri),
-                            contentDescription = "Avatar del Usuario",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Avatar del Usuario",
-                            tint = Color.White,
-                            modifier = Modifier.size(50.dp)
-                        )
+                    // Circular image Box
+                    Box(
+                        modifier = Modifier
+                            .size(90.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF1E1E2C)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (imageUri != null) {
+                            Image(
+                                painter = rememberAsyncImagePainter(model = imageUri),
+                                contentDescription = "Avatar del Usuario",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Avatar del Usuario",
+                                tint = Color.White,
+                                modifier = Modifier.size(50.dp)
+                            )
+                        }
                     }
+                    // Camera Icon
                     Icon(
                         imageVector = Icons.Filled.CameraAlt,
                         contentDescription = "Cambiar Foto",
                         tint = Color.White.copy(alpha = 0.7f),
                         modifier = Modifier
-                            .align(Alignment.BottomEnd)
+                            .offset(y = (-15).dp)
                             .size(30.dp)
+                            .background(color = Color(0xFF1F222A), shape = CircleShape)
                             .padding(4.dp)
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "$name $lastName",
+                    text = name,
                     color = Color.White,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
