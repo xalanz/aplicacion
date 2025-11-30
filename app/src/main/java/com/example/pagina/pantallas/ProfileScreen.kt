@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,37 +27,32 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.pagina.viewmodel.UserViewModel
 
-// Define los colores del degradado basados en la imagen
-val gradientColors = listOf(Color(0xFF6A1BBE), Color(0xFF345C8C)) // Morado oscuro a azul oscuro
+val gradientColors = listOf(Color(0xFF6A1BBE), Color(0xFF345C8C))
 
-/**
- * Pantalla de Perfil de Usuario con el estilo visual de la imagen.
- * Muestra los datos del último usuario registrado y permite simular la edición.
- */
 @Composable
-fun ProfileScreen(viewModel: UserViewModel) {
-    // Los datos del usuario actual
-    val latestUser by viewModel.latestUser.collectAsState()
+fun ProfileScreen(
+    viewModel: UserViewModel,
+    onLogout: () -> Unit
+) {
+    // NOTA: Para que esto funcione, necesitamos el ID del usuario que ha iniciado sesión.
+    // Asumiremos que el ViewModel lo gestionará internamente por ahora.
+    val currentUser by viewModel.latestUser.collectAsState() // Esto deberá cambiar por el usuario actual
 
-    // Estado para la URI de la imagen de perfil
     var imageUri by remember { mutableStateOf<Uri?>(null) }
-
-    // Launcher para seleccionar una imagen de la galería
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         imageUri = uri
     }
 
-    val initialUser = latestUser
-    var name by remember { mutableStateOf(initialUser?.name ?: "David") }
-    var lastName by remember { mutableStateOf(initialUser?.apellidos ?: "Smith") }
-    var email by remember { mutableStateOf(initialUser?.email ?: "davidsmith@pro") }
+    val name = currentUser?.name ?: ""
+    val lastName = currentUser?.apellidos ?: ""
+    val email = currentUser?.email ?: ""
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1F222A)) // Changed background for consistency
+            .background(Color(0xFF1F222A))
     ) {
         Box(
             modifier = Modifier
@@ -91,13 +87,12 @@ fun ProfileScreen(viewModel: UserViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(top = 100.dp)
             ) {
-                // Avatar con funcionalidad de clic para cambiar la imagen
                 Box(
                     modifier = Modifier
                         .size(90.dp)
                         .clip(CircleShape)
                         .background(Color(0xFF1E1E2C))
-                        .clickable { galleryLauncher.launch("image/*") }, // Abre la galería
+                        .clickable { galleryLauncher.launch("image/*") },
                     contentAlignment = Alignment.Center
                 ) {
                     if (imageUri != null) {
@@ -115,7 +110,6 @@ fun ProfileScreen(viewModel: UserViewModel) {
                             modifier = Modifier.size(50.dp)
                         )
                     }
-                    // Icono de cámara superpuesto
                     Icon(
                         imageVector = Icons.Filled.CameraAlt,
                         contentDescription = "Cambiar Foto",
@@ -143,32 +137,16 @@ fun ProfileScreen(viewModel: UserViewModel) {
                 .padding(horizontal = 24.dp, vertical = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ProfileTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = "Nombre",
-                placeholder = "Nombre"
-            )
+            ProfileInfoField(label = "Nombre", value = name)
             Spacer(modifier = Modifier.height(16.dp))
-
-            ProfileTextField(
-                value = lastName,
-                onValueChange = { lastName = it },
-                label = "Apellido",
-                placeholder = "Apellido"
-            )
+            ProfileInfoField(label = "Apellido", value = lastName)
             Spacer(modifier = Modifier.height(16.dp))
-
-            ProfileTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = "Email ",
-                placeholder = "Correo Electrónico"
-            )
+            ProfileInfoField(label = "Email", value = email)
             Spacer(modifier = Modifier.weight(1f))
 
+            // Botón de Cerrar Sesión
             Button(
-                onClick = { /* Lógica para guardar o ir a la siguiente pantalla */ },
+                onClick = onLogout,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -181,33 +159,26 @@ fun ProfileScreen(viewModel: UserViewModel) {
                         .fillMaxSize()
                         .background(
                             brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color(0xFF6A1BBE),
-                                    Color(0xFF8A2BE2)
-                                )
+                                colors = listOf(Color(0xFFE63946), Color(0xFFD90429)) // Rojo para logout
                             ),
                             shape = MaterialTheme.shapes.medium
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "Actualizar", style = MaterialTheme.typography.titleMedium,color = Color.White)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(imageVector = Icons.Default.Logout, contentDescription = null, tint = Color.White)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "Cerrar Sesión", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                    }
                 }
             }
         }
     }
 }
 
-/**
- * Componente reutilizable para los campos de texto del perfil.
- * Simula el estilo de línea inferior de la imagen.
- */
+// Campo de texto de solo lectura para mostrar información
 @Composable
-fun ProfileTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    placeholder: String
-) {
+fun ProfileInfoField(label: String, value: String) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = label,
@@ -217,17 +188,19 @@ fun ProfileTextField(
         )
         OutlinedTextField(
             value = value,
-            onValueChange = onValueChange,
+            onValueChange = {},
+            readOnly = true,
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            placeholder = { Text(placeholder,color = Color.Gray) },
             shape = RoundedCornerShape(8.dp),
             textStyle = LocalTextStyle.current.copy(color = Color.White),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF8A2BE2),
+                focusedBorderColor = Color.Gray,
                 unfocusedBorderColor = Color.Gray,
                 focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent
+                unfocusedContainerColor = Color.Transparent,
+                disabledTextColor = Color.White,
+                disabledBorderColor = Color.Gray
             )
         )
     }

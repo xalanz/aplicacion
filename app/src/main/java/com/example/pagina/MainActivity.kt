@@ -1,5 +1,6 @@
 package com.example.pagina
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,6 +34,9 @@ class MainActivity : ComponentActivity() {
         val userViewModelFactory = UserViewModelFactory(userRepo)
         val productViewModelFactory = ProductViewModelFactory(productRepo)
 
+        // --- Manejo de Sesión ---
+        val sharedPreferences = getSharedPreferences("app_session", Context.MODE_PRIVATE)
+
         setContent {
             PaginaTheme {
                 // --- Instancias de ViewModels ---
@@ -40,8 +44,12 @@ class MainActivity : ComponentActivity() {
                 val productViewModel: ProductViewModel = viewModel(factory = productViewModelFactory)
 
                 // --- Navegación Principal ---
-                // Pasamos ambos ViewModels a nuestro sistema de navegación.
-                AppNavigation(userViewModel = userViewModel, productViewModel = productViewModel)
+                // Pasamos ambos ViewModels y el estado de la sesión a nuestro sistema de navegación.
+                AppNavigation(
+                    userViewModel = userViewModel,
+                    productViewModel = productViewModel,
+                    sharedPreferences = sharedPreferences
+                )
             }
         }
     }

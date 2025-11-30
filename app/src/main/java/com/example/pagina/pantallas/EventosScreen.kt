@@ -43,7 +43,7 @@ val tftEvents = listOf(
     Evento(
         name = "Coliseo KO",
         description = "Lanzamos el Coliseo KO con un parche espectacular con el Tesoro de Choncc y un montón de mejoras tanto para KO como para Uncharted Realms! Pero la acción apenas comienza; según la leyenda, un nuevo set llegará en el próximo parche, así que no te pierdas la historia en un solo vistazo",
-        imageUrl = "android.resource://com.example.pagina/" + R.drawable.tft
+        imageUrl = "https://images.contentstack.io/v3/assets/blt731acb42bb3d1659/blt5a56d205051e605d/631a52dc6678230e819f79bd/TFT_Pass_And_More_Article_Header.jpg"
     ),
     Evento(
         name = "Pase Beta de TFT",

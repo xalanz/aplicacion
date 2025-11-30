@@ -16,9 +16,14 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
         emptyList()
     )
 
-    // Expone el último usuario como un StateFlow
     val latestUser: StateFlow<User?> = repository.latestUser
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    // --- NUEVA FUNCIÓN DE LOGIN ---
+    // Es una función suspendida porque interactúa con la base de datos.
+    suspend fun login(email: String, password: String): User? {
+        return repository.login(email, password)
+    }
 
     fun addUser(name: String, apellidos: String, email: String, password: String, direccion: String) {
         viewModelScope.launch {

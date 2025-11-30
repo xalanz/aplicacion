@@ -1,5 +1,6 @@
 package com.example.pagina.navegacion
 
+import android.content.SharedPreferences
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,26 +18,48 @@ import com.example.pagina.registro_inicio.WelcomeScreen
 import com.example.pagina.viewmodel.ProductViewModel
 import com.example.pagina.viewmodel.UserViewModel
 
-/**
- * Gestiona la navegación principal de la aplicación.
- * Es el "controlador de tráfico" que decide qué pantalla mostrar.
- */
 @Composable
-fun AppNavigation(userViewModel: UserViewModel, productViewModel: ProductViewModel) {
+fun AppNavigation(
+    userViewModel: UserViewModel,
+    productViewModel: ProductViewModel,
+    sharedPreferences: SharedPreferences // Nuevo parámetro
+) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = AppRutas.Welcome.route) {
+    // Decide la ruta de inicio basada en si el usuario ya ha iniciado sesión
+    val loggedInUserId = sharedPreferences.getLong("logged_in_user_id", -1L)
+    val startDestination = if (loggedInUserId != -1L) {
+        // Si hay un ID de usuario, ve directamente a Home
+        AppRutas.Home.route
+    } else {
+        // Si no, empieza por la pantalla de bienvenida
+        AppRutas.Welcome.route
+    }
+
+    NavHost(navController = navController, startDestination = startDestination) {
 
         composable(route = AppRutas.Welcome.route) {
             WelcomeScreen(navController)
         }
 
         composable(route = AppRutas.Login.route) {
-            InisioSeecion(navController, onLoginSuccess = {
-                navController.navigate(AppRutas.Home.route) {
-                    popUpTo(AppRutas.Welcome.route) { inclusive = true }
+            // El ViewModel se pasa aquí para manejar la lógica de inicio de sesión
+            InisioSeecion(
+                navController = navController,
+                viewModel = userViewModel, // Pasando el ViewModel
+                onLoginSuccess = { userId ->
+                    // 1. Guardar la sesión del usuario
+                    with(sharedPreferences.edit()) {
+                        putLong("logged_in_user_id", userId)
+                        apply()
+                    }
+                    // 2. Navegar a la pantalla de inicio y limpiar la pila de atrás
+                    navController.navigate(AppRutas.Home.route) {
+                        popUpTo(AppRutas.Welcome.route) { inclusive = true }
+                        launchSingleTop = true // Evita múltiples copias de Home
+                    }
                 }
-            })
+            )
         }
 
         composable(route = AppRutas.Registro.route) {
@@ -48,7 +71,22 @@ fun AppNavigation(userViewModel: UserViewModel, productViewModel: ProductViewMod
         }
 
         composable(route = AppRutas.Profile.route) {
-            ProfileScreen(viewModel = userViewModel)
+            ProfileScreen(
+                viewModel = userViewModel,
+                onLogout = {
+                    // 1. Borrar la sesión guardada
+                    with(sharedPreferences.edit()) {
+                        remove("logged_in_user_id")
+                        apply()
+                    }
+                    // 2. Navegar de vuelta a la pantalla de bienvenida
+                    navController.navigate(AppRutas.Welcome.route) {
+                        // Limpia toda la pila de navegación para que el usuario no pueda volver atrás
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
 
         composable(route = AppRutas.Settings.route) {

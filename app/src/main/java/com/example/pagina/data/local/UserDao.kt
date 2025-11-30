@@ -13,9 +13,12 @@ interface UserDao {
     @Query("SELECT * FROM users ORDER BY id DESC")
     fun getAllUsers(): Flow<List<User>>
 
-    // NUEVA FUNCIÓN PARA OBTENER EL ÚLTIMO USUARIO
     @Query("SELECT * FROM users ORDER BY id DESC LIMIT 1")
     fun getLatestUser(): Flow<User?>
+
+    // --- NUEVA CONSULTA PARA EL LOGIN ---
+    @Query("SELECT * FROM users WHERE email = :email AND password = :password LIMIT 1")
+    suspend fun login(email: String, password: String): User?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: User)
