@@ -79,8 +79,11 @@ fun InisioSeecion(
 
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
-                label = { Text("Nombre", color = Color.White) },
+                onValueChange = {
+                    email = it
+                    errorMessage = null // Limpia el error al escribir
+                },
+                label = { Text("Email", color = Color.White) }, // Corregido de "Nombre" a "Email"
                 textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
                 colors = TextFieldDefaults.colors(
                     focusedTextColor = Color.White,
@@ -97,7 +100,10 @@ fun InisioSeecion(
 
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = {
+                    password = it
+                    errorMessage = null // Limpia el error al escribir
+                },
                 label = { Text("Contraseña", color = Color.White) },
                 visualTransformation = PasswordVisualTransformation(),
                 colors = TextFieldDefaults.colors(
@@ -120,13 +126,18 @@ fun InisioSeecion(
 
             Button(
                 onClick = {
-                    scope.launch {
-                        val user = viewModel.login(email, password)
-                        if (user != null) {
-                            // Se convierte el ID (Int) a Long antes de pasarlo.
-                            onLoginSuccess(user.id.toLong())
-                        } else {
-                            errorMessage = "Usuario o contraseña incorrectos"
+                    // --- VALIDACIONES ---
+                    if (!email.endsWith("@gmail.com", ignoreCase = true)) {
+                        errorMessage = "El correo debe terminar con @gmail.com"
+                    } else {
+                        // Si las validaciones pasan, se intenta el login
+                        scope.launch {
+                            val user = viewModel.login(email, password)
+                            if (user != null) {
+                                onLoginSuccess(user.id.toLong())
+                            } else {
+                                errorMessage = "Usuario o contraseña incorrectos"
+                            }
                         }
                     }
                 },

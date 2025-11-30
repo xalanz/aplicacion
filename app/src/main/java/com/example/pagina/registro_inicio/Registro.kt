@@ -1,15 +1,20 @@
 package com.example.pagina.registro_inicio
-// FORCE RE-COMPILE
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,50 +22,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.pagina.ui.theme.PaginaTheme
 import com.example.pagina.viewmodel.UserViewModel
-import androidx.compose.foundation.background
-import androidx.compose.ui.graphics.Color
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.foundation.layout.width
 
-
-
-
-
-
-
-
-
-
-
-
-/**
- * Pantalla de Registro de nuevos usuarios.
- * Contiene la lógica principal y el estado de la pantalla.
- */
 @Composable
 fun Registro(navController: NavController, viewModel: UserViewModel, modifier: Modifier = Modifier) {
-    // Estados para cada campo de texto del formulario.
     var nombre by remember { mutableStateOf("") }
     var apellidos by remember { mutableStateOf("") }
     var correo by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var verifyPassword by remember { mutableStateOf("") }
     var direccion by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
-    // Valida que todos los campos estén rellenos para activar el botón de registro.
-    val isFormValid = nombre.isNotBlank() && apellidos.isNotBlank() && correo.isNotBlank() && password.isNotBlank() && verifyPassword.isNotBlank() && direccion.isNotBlank()
-
-    // Llama al Composable del formulario, pasándole los estados y los eventos.
     RegistroForm(
         modifier = modifier,
         nombre = nombre,
@@ -69,24 +49,36 @@ fun Registro(navController: NavController, viewModel: UserViewModel, modifier: M
         password = password,
         verifyPassword = verifyPassword,
         direccion = direccion,
-        onNombreChange = { nombre = it },
-        onApellidosChange = { apellidos = it },
-        onCorreoChange = { correo = it },
-        onPasswordChange = { password = it },
-        onVerifyPasswordChange = { verifyPassword = it },
-        onDireccionChange = { direccion = it },
+        errorMessage = errorMessage,
+        onNombreChange = { nombre = it; errorMessage = null },
+        onApellidosChange = { apellidos = it; errorMessage = null },
+        onCorreoChange = { correo = it; errorMessage = null },
+        onPasswordChange = { password = it; errorMessage = null },
+        onVerifyPasswordChange = { verifyPassword = it; errorMessage = null },
+        onDireccionChange = { direccion = it; errorMessage = null },
         onRegisterClick = {
-            viewModel.addUser(nombre, apellidos, correo, password, direccion)
-            navController.popBackStack()
-        },
-        isFormValid = isFormValid
+            when {
+                nombre.isBlank() || apellidos.isBlank() || correo.isBlank() || password.isBlank() || direccion.isBlank() -> {
+                    errorMessage = "Todos los campos son obligatorios"
+                }
+                !correo.endsWith("@gmail.com", ignoreCase = true) -> {
+                    errorMessage = "El correo debe ser @gmail.com"
+                }
+                password.length < 6 -> {
+                    errorMessage = "La contraseña debe tener al menos 6 caracteres"
+                }
+                password != verifyPassword -> {
+                    errorMessage = "Las contraseñas no coinciden"
+                }
+                else -> {
+                    viewModel.addUser(nombre, apellidos, correo, password, direccion)
+                    navController.popBackStack()
+                }
+            }
+        }
     )
 }
 
-/**
- * Composable que representa únicamente el formulario de registro.
- * No tiene lógica, solo se encarga de mostrar los campos y el botón.
- */
 @Composable
 fun RegistroForm(
     modifier: Modifier = Modifier,
@@ -96,14 +88,14 @@ fun RegistroForm(
     password: String,
     verifyPassword: String,
     direccion: String,
+    errorMessage: String?,
     onNombreChange: (String) -> Unit,
     onApellidosChange: (String) -> Unit,
     onCorreoChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onVerifyPasswordChange: (String) -> Unit,
     onDireccionChange: (String) -> Unit,
-    onRegisterClick: () -> Unit,
-    isFormValid: Boolean
+    onRegisterClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -114,124 +106,64 @@ fun RegistroForm(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-    Text("Formulario de Registro",
-        color = Color.White)
+        Text("Formulario de Registro", color = Color.White)
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(
-            value = nombre,
-            onValueChange = onNombreChange,
-            label = { Text("Nombre", color = Color.White) },
-            textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
-            colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                cursorColor = Color.White,
-                focusedContainerColor = Color.Transparent,   // 🔹 Fondo transparente
-                unfocusedContainerColor = Color.Transparent, // 🔹 Fondo transparente
-                disabledContainerColor = Color.Transparent,  // 🔹 Fondo transparente
-                errorContainerColor = Color.Transparent      // 🔹 Fondo transparente
-            )
-        )
 
-        Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-            value = apellidos,
-            onValueChange = onApellidosChange,
-            label = { Text("Apellido", color = Color.White) },
-            textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
-            colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                cursorColor = Color.White,
-                focusedContainerColor = Color.Transparent,   // 🔹 Fondo transparente
-                unfocusedContainerColor = Color.Transparent, // 🔹 Fondo transparente
-                disabledContainerColor = Color.Transparent,  // 🔹 Fondo transparente
-                errorContainerColor = Color.Transparent      // 🔹 Fondo transparente
-            )
+            value = nombre, onValueChange = onNombreChange, label = { Text("Nombre", color = Color.White) },
+            singleLine = true, textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
+            colors = campoTextoColores()
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = correo,
-            onValueChange = onCorreoChange,
-            label = { Text("Correo electronico", color = Color.White) },
-            textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
-            colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                cursorColor = Color.White,
-                focusedContainerColor = Color.Transparent,   // 🔹 Fondo transparente
-                unfocusedContainerColor = Color.Transparent, // 🔹 Fondo transparente
-                disabledContainerColor = Color.Transparent,  // 🔹 Fondo transparente
-                errorContainerColor = Color.Transparent      // 🔹 Fondo transparente
-            )
-        )
-        Spacer(modifier = Modifier.height(8.dp))
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = password,
-            onValueChange = onPasswordChange,
-            label = { Text("Contraseña", color = Color.White) },
-            visualTransformation = PasswordVisualTransformation(),
-            textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
-            colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                cursorColor = Color.White,
-                focusedContainerColor = Color.Transparent,   // 🔹 Fondo transparente
-                unfocusedContainerColor = Color.Transparent, // 🔹 Fondo transparente
-                disabledContainerColor = Color.Transparent,  // 🔹 Fondo transparente
-                errorContainerColor = Color.Transparent      // 🔹 Fondo transparente
-            )
+            value = apellidos, onValueChange = onApellidosChange, label = { Text("Apellido", color = Color.White) },
+            singleLine = true, textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
+            colors = campoTextoColores()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = correo, onValueChange = onCorreoChange, label = { Text("Correo electrónico", color = Color.White) },
+            singleLine = true, textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
+            colors = campoTextoColores()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = password, onValueChange = onPasswordChange, label = { Text("Contraseña", color = Color.White) },
+            singleLine = true, visualTransformation = PasswordVisualTransformation(),
+            textStyle = androidx.compose.ui.text.TextStyle(color = Color.White), colors = campoTextoColores()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = verifyPassword, onValueChange = onVerifyPasswordChange, label = { Text("Verificar contraseña", color = Color.White) },
+            singleLine = true, visualTransformation = PasswordVisualTransformation(),
+            textStyle = androidx.compose.ui.text.TextStyle(color = Color.White), colors = campoTextoColores()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = direccion, onValueChange = onDireccionChange, label = { Text("Dirección", color = Color.White) },
+            singleLine = true, textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
+            colors = campoTextoColores()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = verifyPassword,
-            onValueChange = onVerifyPasswordChange,
-            label = { Text("Verificar contraseña", color = Color.White) },
-            visualTransformation = PasswordVisualTransformation(),
-            textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
-            colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                cursorColor = Color.White,
-                focusedContainerColor = Color.Transparent,   // 🔹 Fondo transparente
-                unfocusedContainerColor = Color.Transparent, // 🔹 Fondo transparente
-                disabledContainerColor = Color.Transparent,  // 🔹 Fondo transparente
-                errorContainerColor = Color.Transparent      // 🔹 Fondo transparente
-            )
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = direccion,
-            onValueChange = onDireccionChange,
-            label = { Text("Direccion", color = Color.White) },
-            visualTransformation = PasswordVisualTransformation(),
-            textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
-            colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                cursorColor = Color.White,
-                focusedContainerColor = Color.Transparent,   // 🔹 Fondo transparente
-                unfocusedContainerColor = Color.Transparent, // 🔹 Fondo transparente
-                disabledContainerColor = Color.Transparent,  // 🔹 Fondo transparente
-                errorContainerColor = Color.Transparent      // 🔹 Fondo transparente
-            )
-        )
+        errorMessage?.let {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = it, color = Color.Red)
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Box(
             modifier = Modifier
-                .width(220.dp)                    // 🔹 Ancho reducido
-                .height(48.dp)                    // 🔹 Alto reducido
+                .width(220.dp)
+                .height(48.dp)
                 .background(
                     brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            Color(0xFF7B2FF7),    // Morado eléctrico
-                            Color(0xFF9C4DFF),    // Morado brillante
-                            Color(0xFFC084FC)     // Lila luminoso
-                        )
+                        colors = listOf(Color(0xFF7B2FF7), Color(0xFF9C4DFF), Color(0xFFC084FC))
                     ),
                     shape = RoundedCornerShape(12.dp)
                 )
@@ -239,33 +171,36 @@ fun RegistroForm(
             Button(
                 onClick = onRegisterClick,
                 modifier = Modifier.fillMaxSize(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent,  // Fondo transparente (deja ver el degradado)
-                    contentColor = Color.White           // Texto blanco
-                ),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Color.White),
                 elevation = null
             ) {
                 Text("Registrarse")
             }
         }
-
     }
+}
 
-
-    }
-
+@Composable
+private fun campoTextoColores() = TextFieldDefaults.colors(
+    focusedTextColor = Color.White,
+    unfocusedTextColor = Color.White,
+    cursorColor = Color.White,
+    focusedContainerColor = Color.Transparent,
+    unfocusedContainerColor = Color.Transparent,
+    disabledContainerColor = Color.Transparent,
+    errorContainerColor = Color.Transparent
+)
 
 @Preview(showBackground = true)
 @Composable
 fun RegistroPreview() {
     PaginaTheme {
-        // La vista previa ahora puede mostrar el formulario, pero sin lógica.
         RegistroForm(
-            nombre = "", apellidos = "", correo = "", password = "", 
-            verifyPassword = "", direccion = "", onNombreChange = {}, 
-            onApellidosChange = {}, onCorreoChange = {}, onPasswordChange = {}, 
-            onVerifyPasswordChange = {}, onDireccionChange = {}, 
-            onRegisterClick = {}, isFormValid = false
+            nombre = "", apellidos = "", correo = "", password = "",
+            verifyPassword = "", direccion = "", errorMessage = "Esto es un error de prueba",
+            onNombreChange = {}, onApellidosChange = {}, onCorreoChange = {},
+            onPasswordChange = {}, onVerifyPasswordChange = {}, onDireccionChange = {},
+            onRegisterClick = {}
         )
     }
 }
