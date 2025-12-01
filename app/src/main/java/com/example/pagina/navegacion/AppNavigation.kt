@@ -2,9 +2,11 @@ package com.example.pagina.navegacion
 
 import android.content.SharedPreferences
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.pagina.pantallas.AddProductScreen
 import com.example.pagina.pantallas.CartScreen
 import com.example.pagina.pantallas.EventosScreen
 import com.example.pagina.pantallas.HomeScreen
@@ -22,18 +24,23 @@ import com.example.pagina.viewmodel.UserViewModel
 fun AppNavigation(
     userViewModel: UserViewModel,
     productViewModel: ProductViewModel,
-    sharedPreferences: SharedPreferences // Nuevo parámetro
+    sharedPreferences: SharedPreferences
 ) {
     val navController = rememberNavController()
 
-    // Decide la ruta de inicio basada en si el usuario ya ha iniciado sesión
     val loggedInUserId = sharedPreferences.getLong("logged_in_user_id", -1L)
     val startDestination = if (loggedInUserId != -1L) {
-        // Si hay un ID de usuario, ve directamente a Home
         AppRutas.Home.route
     } else {
-        // Si no, empieza por la pantalla de bienvenida
         AppRutas.Welcome.route
+    }
+
+    // Carga los datos del usuario si hay una sesión iniciada.
+    // Esto se ejecuta cuando el componente se dibuja por primera vez o si el ID del usuario cambia.
+    LaunchedEffect(loggedInUserId) {
+        if (loggedInUserId != -1L) {
+            userViewModel.loadUserById(loggedInUserId)
+        }
     }
 
     NavHost(navController = navController, startDestination = startDestination) {
@@ -43,20 +50,20 @@ fun AppNavigation(
         }
 
         composable(route = AppRutas.Login.route) {
-            // El ViewModel se pasa aquí para manejar la lógica de inicio de sesión
             InisioSeecion(
                 navController = navController,
-                viewModel = userViewModel, // Pasando el ViewModel
+                viewModel = userViewModel,
                 onLoginSuccess = { userId ->
-                    // 1. Guardar la sesión del usuario
                     with(sharedPreferences.edit()) {
                         putLong("logged_in_user_id", userId)
                         apply()
                     }
-                    // 2. Navegar a la pantalla de inicio y limpiar la pila de atrás
+                    // Cargar los datos del usuario inmediatamente después de iniciar sesión
+                    userViewModel.loadUserById(userId)
+                    
                     navController.navigate(AppRutas.Home.route) {
                         popUpTo(AppRutas.Welcome.route) { inclusive = true }
-                        launchSingleTop = true // Evita múltiples copias de Home
+                        launchSingleTop = true
                     }
                 }
             )
@@ -74,19 +81,16 @@ fun AppNavigation(
             ProfileScreen(
                 viewModel = userViewModel,
                 onLogout = {
-                    // 1. Borrar la sesión guardada
                     with(sharedPreferences.edit()) {
                         remove("logged_in_user_id")
                         apply()
                     }
-                    // 2. Navegar de vuelta a la pantalla de bienvenida
                     navController.navigate(AppRutas.Welcome.route) {
-                        // Limpia toda la pila de navegación para que el usuario no pueda volver atrás
                         popUpTo(navController.graph.startDestinationId) { inclusive = true }
                         launchSingleTop = true
                     }
                 },
-                onBack = { navController.popBackStack() } // Añadido el parámetro onBack
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -99,7 +103,7 @@ fun AppNavigation(
         }
 
         composable(route = AppRutas.Tienda.route) {
-            TiendaScreen(navController = navController, productViewModel = productViewModel)
+            TiendaScreen(navController = navController, productViewModel = productViewModel, userViewModel = userViewModel)
         }
 
         composable(route = AppRutas.Cart.route) {
@@ -108,6 +112,10 @@ fun AppNavigation(
 
         composable(route = AppRutas.Eventos.route) {
             EventosScreen(navController)
+        }
+
+        composable(route = AppRutas.AddProduct.route) {
+            AddProductScreen(navController = navController, productViewModel = productViewModel)
         }
     }
 }

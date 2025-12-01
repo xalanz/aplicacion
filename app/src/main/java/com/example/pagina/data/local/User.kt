@@ -11,5 +11,6 @@ data class User(
     val apellidos: String,
     val email: String,
     val password: String,
-    val direccion: String
+    val direccion: String,
+    val role: String = "USER" // Añadido el campo de rol con valor por defecto
 )

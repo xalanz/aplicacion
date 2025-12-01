@@ -16,6 +16,9 @@ interface UserDao {
     @Query("SELECT * FROM users ORDER BY id DESC LIMIT 1")
     fun getLatestUser(): Flow<User?>
 
+    @Query("SELECT * FROM users WHERE id = :userId")
+    suspend fun getUserById(userId: Long): User?
+
     // --- NUEVA CONSULTA PARA EL LOGIN ---
     @Query("SELECT * FROM users WHERE email = :email AND password = :password LIMIT 1")
     suspend fun login(email: String, password: String): User?

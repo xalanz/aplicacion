@@ -8,6 +8,10 @@ class UserRepository(private val dao: UserDao) {
     val users: Flow<List<User>> = dao.getAllUsers()
     val latestUser: Flow<User?> = dao.getLatestUser()
 
+    suspend fun getUserById(userId: Long): User? {
+        return dao.getUserById(userId)
+    }
+
     // --- NUEVA FUNCIÓN DE LOGIN ---
     // Es una función suspendida porque interactúa con la base de datos.
     suspend fun login(email: String, password: String): User? {

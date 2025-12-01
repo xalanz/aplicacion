@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
@@ -110,6 +111,15 @@ fun HomeScreen(navController: NavController) {
                     onClick = {
                         scope.launch { drawerState.close() }
                         navController.navigate(AppRutas.Profile.route)
+                    }
+                )
+                NavigationDrawerItem(
+                    icon = { Icon(Icons.Filled.Add, contentDescription = "Agregar Producto", tint = Color.White) },
+                    label = { Text("Agregar Producto", color = Color.White) },
+                    selected = false,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        navController.navigate(AppRutas.AddProduct.route)
                     }
                 )
             }

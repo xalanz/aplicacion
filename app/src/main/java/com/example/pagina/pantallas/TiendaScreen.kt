@@ -16,12 +16,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +32,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +51,7 @@ import com.example.pagina.R
 import com.example.pagina.data.local.Product
 import com.example.pagina.navegacion.AppRutas
 import com.example.pagina.viewmodel.ProductViewModel
+import com.example.pagina.viewmodel.UserViewModel
 
 val availableProducts = listOf(
     Product(productName = "Teclado Gamer", price = 69.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.teclado_1),
@@ -60,7 +65,9 @@ val availableProducts = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TiendaScreen(navController: NavController, productViewModel: ProductViewModel) {
+fun TiendaScreen(navController: NavController, productViewModel: ProductViewModel, userViewModel: UserViewModel) {
+    val currentUser by userViewModel.currentUser.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -74,6 +81,16 @@ fun TiendaScreen(navController: NavController, productViewModel: ProductViewMode
                     containerColor = Color(0xFF1F222A)
                 )
             )
+        },
+        floatingActionButton = {
+            if (currentUser?.role == "ADMIN") {
+                FloatingActionButton(
+                    onClick = { navController.navigate(AppRutas.AddProduct.route) },
+                    containerColor = MaterialTheme.colorScheme.secondary
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Agregar producto", tint = Color.White)
+                }
+            }
         },
         containerColor = Color(0xFF1F222A)
     ) { innerPadding ->

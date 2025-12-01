@@ -48,4 +48,7 @@ sealed class AppRutas(val route: String) {
 
     // Pantalla de eventos.
     object Eventos: AppRutas("/eventos")
+
+    // Pantalla para agregar un nuevo producto.
+    object AddProduct: AppRutas("/add_product")
 }

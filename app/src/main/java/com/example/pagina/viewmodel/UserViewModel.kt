@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pagina.data.local.User
 import com.example.pagina.data.repository.UserRepository
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -18,6 +20,15 @@ class UserViewModel(private val repository: UserRepository) : ViewModel() {
 
     val latestUser: StateFlow<User?> = repository.latestUser
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    private val _currentUser = MutableStateFlow<User?>(null)
+    val currentUser: StateFlow<User?> = _currentUser.asStateFlow()
+
+    fun loadUserById(userId: Long) {
+        viewModelScope.launch {
+            _currentUser.value = repository.getUserById(userId)
+        }
+    }
 
     // --- NUEVA FUNCIÓN DE LOGIN ---
     // Es una función suspendida porque interactúa con la base de datos.
