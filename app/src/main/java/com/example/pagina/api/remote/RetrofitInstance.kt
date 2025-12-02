@@ -15,3 +15,5 @@ object RetrofitInstance {
     }
 
 }
+
+//http://localhost:9090/api/products
