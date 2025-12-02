@@ -2,6 +2,7 @@ package com.example.pagina.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pagina.api.model.Product as ApiProduct
 import com.example.pagina.data.local.Product
 import com.example.pagina.data.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
@@ -9,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import com.example.pagina.api.Product as ApiProduct
 
 /**
  * ViewModel para gestionar la lógica de negocio de los productos.

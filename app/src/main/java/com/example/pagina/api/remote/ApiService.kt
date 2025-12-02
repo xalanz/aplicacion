@@ -1,5 +1,6 @@
-package com.example.pagina.api
+package com.example.pagina.api.remote
 
+import com.example.pagina.api.model.Product
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE

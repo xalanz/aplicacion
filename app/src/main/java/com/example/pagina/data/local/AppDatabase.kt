@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
  * @property userDao El DAO para acceder a la tabla de usuarios.
  * @property productDao El DAO para acceder a la tabla de productos.
  */
-@Database(entities = [User::class, Product::class], version = 4, exportSchema = false) // Incrementada la versión por el cambio de esquema
+@Database(entities = [User::class, Product::class], version = 5, exportSchema = false) // Incrementada la versión por el cambio de esquema
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun productDao(): ProductDao

@@ -1,9 +1,10 @@
-package com.example.pagina.api
+package com.example.pagina.api.remote
 
+import com.example.pagina.api.remote.ApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object RetrofitProudct {
+object RetrofitInstance {
 
     val api: ApiService by lazy {
         Retrofit.Builder()

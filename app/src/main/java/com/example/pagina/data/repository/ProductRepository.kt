@@ -1,11 +1,11 @@
 package com.example.pagina.data.repository
 
-import com.example.pagina.api.ApiService
-import com.example.pagina.api.RetrofitProudct
+import com.example.pagina.api.remote.ApiService
+import com.example.pagina.api.remote.RetrofitInstance
 import com.example.pagina.data.local.Product
+import com.example.pagina.api.model.Product as ApiProduct
 import com.example.pagina.data.local.ProductDao
 import kotlinx.coroutines.flow.Flow
-import com.example.pagina.api.Product as ApiProduct
 
 /**
  * Repositorio para gestionar las operaciones de los productos.
@@ -13,7 +13,7 @@ import com.example.pagina.api.Product as ApiProduct
  */
 class ProductRepository(
     private val productDao: ProductDao,
-    private val apiService: ApiService = RetrofitProudct.api
+    private val apiService: ApiService = RetrofitInstance.api
 ) {
 
     /**

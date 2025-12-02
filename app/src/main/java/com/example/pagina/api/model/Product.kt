@@ -1,6 +1,6 @@
-package com.example.pagina.api
+package com.example.pagina.api.model
 
-data class Product(
+data class Product (
     val id: Long? = null, // Cambiado a Long? para permitir valores nulos
     val name: String,
     val categories: String,
