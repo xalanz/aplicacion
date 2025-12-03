@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.pagina.viewmodel.ProductViewModel
 import com.example.pagina.api.model.Product as ApiProduct
+import com.example.pagina.navegacion.AppRutas
 
 @Composable
 fun AddProductScreen(navController: NavController, productViewModel: ProductViewModel = viewModel()) {
@@ -39,7 +40,9 @@ fun AddProductScreen(navController: NavController, productViewModel: ProductView
 
     LaunchedEffect(createStatus) {
         if (createStatus == true) {
-            navController.popBackStack()
+            navController.navigate(AppRutas.Tienda.route) {
+                popUpTo(AppRutas.Home.route) { inclusive = true }
+            }
             productViewModel.resetCreateProductStatus()
         }
     }

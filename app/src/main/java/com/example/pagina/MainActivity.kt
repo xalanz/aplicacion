@@ -7,6 +7,9 @@ import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Room
+import com.example.pagina.api.repository.PostRepository
+import com.example.pagina.api.viewmodel.PostViewModel
+import com.example.pagina.api.viewmodel.PostViewModelFactory
 import com.example.pagina.data.local.AppDatabase
 import com.example.pagina.data.repository.ProductRepository
 import com.example.pagina.data.repository.UserRepository
@@ -32,10 +35,12 @@ class MainActivity : ComponentActivity() {
         // --- Repositorios ---
         val userRepo = UserRepository(db.userDao())
         val productRepo = ProductRepository(db.productDao())
+        val postRepo = PostRepository() // Repositorio para la API
 
         // --- Fábricas de ViewModels ---
         val userViewModelFactory = UserViewModelFactory(userRepo)
         val productViewModelFactory = ProductViewModelFactory(productRepo)
+        val postViewModelFactory = PostViewModelFactory(postRepo) // Fábrica para PostViewModel
 
         // --- Manejo de Sesión ---
         val sharedPreferences = getSharedPreferences("app_session", Context.MODE_PRIVATE)
@@ -45,12 +50,14 @@ class MainActivity : ComponentActivity() {
                 // --- Instancias de ViewModels ---
                 val userViewModel: UserViewModel = viewModel(factory = userViewModelFactory)
                 val productViewModel: ProductViewModel = viewModel(factory = productViewModelFactory)
+                val postViewModel: PostViewModel = viewModel(factory = postViewModelFactory) // Instancia de PostViewModel
 
                 // --- Navegación Principal ---
-                // Pasamos ambos ViewModels y el estado de la sesión a nuestro sistema de navegación.
+                // Pasamos todos los ViewModels y el estado de la sesión a nuestro sistema de navegación.
                 AppNavigation(
                     userViewModel = userViewModel,
                     productViewModel = productViewModel,
+                    postViewModel = postViewModel, // Pasar el nuevo ViewModel
                     sharedPreferences = sharedPreferences
                 )
             }

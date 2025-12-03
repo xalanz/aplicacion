@@ -44,29 +44,35 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.pagina.R
-import com.example.pagina.data.local.Product
+import com.example.pagina.api.viewmodel.PostViewModel
 import com.example.pagina.navegacion.AppRutas
 import com.example.pagina.viewmodel.ProductViewModel
 import com.example.pagina.viewmodel.UserViewModel
+import com.example.pagina.api.model.Product as ApiProduct
+import com.example.pagina.data.local.Product as LocalProduct
 
 val availableProducts = listOf(
-    Product(productName = "Teclado Gamer", price = 69.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.teclado_1),
-    Product(productName = "Monitor Curvo", price = 299.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.monitor1),
-    Product(productName = "Mousepad XL", price = 29.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.mauspda1),
-    Product(productName = "Audífonos Pro", price = 129.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.audifono2),
-    Product(productName = "Monitor 24 pulgadas", price = 199.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.monito2),
-    Product(productName = "Teclado Compacto", price = 89.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.teclado2),
-    Product(productName = "Producto Extra", price = 79.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.teclado_1) // Re-usando una imagen
+    LocalProduct(productName = "Teclado Gamer", price = 69.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.teclado_1),
+    LocalProduct(productName = "Monitor Curvo", price = 299.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.monitor1),
+    LocalProduct(productName = "Mousepad XL", price = 29.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.mauspda1),
+    LocalProduct(productName = "Audífonos Pro", price = 129.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.audifono2),
+    LocalProduct(productName = "Monitor 24 pulgadas", price = 199.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.monito2),
+    LocalProduct(productName = "Teclado Compacto", price = 89.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.teclado2),
+    LocalProduct(productName = "Producto Extra", price = 79.99, imageUrl = "android.resource://com.example.pagina/" + R.drawable.teclado_1) // Re-usando una imagen
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TiendaScreen(navController: NavController, productViewModel: ProductViewModel, userViewModel: UserViewModel) {
+fun TiendaScreen(navController: NavController, productViewModel: ProductViewModel, userViewModel: UserViewModel, postViewModel: PostViewModel) {
     val currentUser by userViewModel.currentUser.collectAsState()
+    val remoteProducts by postViewModel.postList.collectAsState()
+
+    val allProducts = availableProducts + remoteProducts.map { it.toLocalProduct() }
 
     Scaffold(
         topBar = {
@@ -101,7 +107,7 @@ fun TiendaScreen(navController: NavController, productViewModel: ProductViewMode
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(availableProducts) { product ->
+            items(allProducts) { product ->
                 ProductoCard(product = product, onAddToCart = {
                     productViewModel.addProductToCart(product)
                 })
@@ -110,8 +116,13 @@ fun TiendaScreen(navController: NavController, productViewModel: ProductViewMode
     }
 }
 
+// Función de extensión para convertir un ApiProduct a un LocalProduct
+fun ApiProduct.toLocalProduct(): LocalProduct {
+    return LocalProduct(productName = this.name, price = this.price.toDouble(), imageUrl = this.image)
+}
+
 @Composable
-fun ProductoCard(product: Product, onAddToCart: () -> Unit) {
+fun ProductoCard(product: LocalProduct, onAddToCart: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),

@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.pagina.api.viewmodel.PostViewModel
 import com.example.pagina.pantallas.AddProductScreen
 import com.example.pagina.pantallas.CartScreen
 import com.example.pagina.pantallas.EventosScreen
@@ -24,6 +25,7 @@ import com.example.pagina.viewmodel.UserViewModel
 fun AppNavigation(
     userViewModel: UserViewModel,
     productViewModel: ProductViewModel,
+    postViewModel: PostViewModel, // Acepta el PostViewModel
     sharedPreferences: SharedPreferences
 ) {
     val navController = rememberNavController()
@@ -35,8 +37,6 @@ fun AppNavigation(
         AppRutas.Welcome.route
     }
 
-    // Carga los datos del usuario si hay una sesión iniciada.
-    // Esto se ejecuta cuando el componente se dibuja por primera vez o si el ID del usuario cambia.
     LaunchedEffect(loggedInUserId) {
         if (loggedInUserId != -1L) {
             userViewModel.loadUserById(loggedInUserId)
@@ -58,7 +58,6 @@ fun AppNavigation(
                         putLong("logged_in_user_id", userId)
                         apply()
                     }
-                    // Cargar los datos del usuario inmediatamente después de iniciar sesión
                     userViewModel.loadUserById(userId)
                     
                     navController.navigate(AppRutas.Home.route) {
@@ -103,7 +102,12 @@ fun AppNavigation(
         }
 
         composable(route = AppRutas.Tienda.route) {
-            TiendaScreen(navController = navController, productViewModel = productViewModel, userViewModel = userViewModel)
+            TiendaScreen(
+                navController = navController, 
+                productViewModel = productViewModel, 
+                userViewModel = userViewModel,
+                postViewModel = postViewModel // Pasa el PostViewModel a la pantalla
+            )
         }
 
         composable(route = AppRutas.Cart.route) {
