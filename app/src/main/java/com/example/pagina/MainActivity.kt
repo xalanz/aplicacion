@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
         val sharedPreferences = getSharedPreferences("app_session", Context.MODE_PRIVATE)
 
         setContent {
-            PaginaTheme {
+            PaginaTheme(darkTheme = true) {
                 // --- Instancias de ViewModels ---
                 val userViewModel: UserViewModel = viewModel(factory = userViewModelFactory)
                 val productViewModel: ProductViewModel = viewModel(factory = productViewModelFactory)
