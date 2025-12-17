@@ -7,14 +7,12 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.navigation.NavController
 import com.example.pagina.data.local.User
+import com.example.pagina.navegacion.AppRutas
 import com.example.pagina.registro_inicio.InisioSeecion
 import com.example.pagina.viewmodel.UserViewModel
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.runBlocking
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -23,59 +21,62 @@ class InisioSeecionTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private lateinit var mockNavController: NavController
-    private lateinit var mockUserViewModel: UserViewModel
-    private lateinit var onLoginSuccess: (Long) -> Unit
+    private val mockNavController: NavController = mockk(relaxed = true)
+    private val mockUserViewModel: UserViewModel = mockk(relaxed = true)
+    private val onLoginSuccess: (Long) -> Unit = mockk(relaxed = true)
 
-    @Before
-    fun setUp() {
-        mockNavController = mockk(relaxed = true)
-        mockUserViewModel = mockk(relaxed = true)
-        onLoginSuccess = mockk(relaxed = true)
+    @Test
+    fun inicioSesion_successfulLogin() {
+        val user = User(id = 1, name = "Alan", apellidos = "Turing", email = "alan.turing@gmail.com", password = "password123", direccion = "Bletchley Park")
+        coEvery { mockUserViewModel.login("alan.turing@gmail.com", "password123") } returns user
 
         composeTestRule.setContent {
-            InisioSeecion(
-                navController = mockNavController,
-                viewModel = mockUserViewModel,
-                onLoginSuccess = onLoginSuccess
-            )
+            InisioSeecion(navController = mockNavController, viewModel = mockUserViewModel, onLoginSuccess = onLoginSuccess)
         }
-    }
 
-    @Test
-    fun loginScreen_initialState_displaysAllElements() {
-        composeTestRule.onNodeWithText("Inicio de Sesión").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Email").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Contraseña").assertIsDisplayed()
-    }
-
-    @Test
-    fun loginButton_whenClickedWithValidInput_callsViewModelAndTriggersCallback() {
-        // Arrange
-        val fakeUser = User(
-            id = 1,
-            name = "Test User",
-            apellidos = "Test Apellido",
-            email = "test@gmail.com",
-            password = "password123",
-            direccion = "123 Fake Street",
-            role = "USER"
-        )
-        coEvery { mockUserViewModel.login(any(), any()) } returns fakeUser
-
-        // Act
-        composeTestRule.onNodeWithText("Email").performTextInput("test@gmail.com")
+        composeTestRule.onNodeWithText("Email").performTextInput("alan.turing@gmail.com")
         composeTestRule.onNodeWithText("Contraseña").performTextInput("password123")
         composeTestRule.onNodeWithText("Iniciar Sesión").performClick()
 
-        // Espera a que la UI y las corrutinas terminen
-        composeTestRule.waitForIdle()
+        verify { onLoginSuccess(1L) }
+    }
 
-        // Assert
-        runBlocking {
-            coVerify { mockUserViewModel.login("test@gmail.com", "password123") }
+    @Test
+    fun inicioSesion_invalidEmail_showsErrorMessage() {
+        composeTestRule.setContent {
+            InisioSeecion(navController = mockNavController, viewModel = mockUserViewModel, onLoginSuccess = onLoginSuccess)
         }
 
-        verify { onLoginSuccess(any()) }
+        composeTestRule.onNodeWithText("Email").performTextInput("invalid-email")
+        composeTestRule.onNodeWithText("Contraseña").performTextInput("password123")
+        composeTestRule.onNodeWithText("Iniciar Sesión").performClick()
+
+        composeTestRule.onNodeWithText("El correo debe terminar con @gmail.com").assertIsDisplayed()
+    }
+
+    @Test
+    fun inicioSesion_wrongCredentials_showsErrorMessage() {
+        coEvery { mockUserViewModel.login(any(), any()) } returns null
+
+        composeTestRule.setContent {
+            InisioSeecion(navController = mockNavController, viewModel = mockUserViewModel, onLoginSuccess = onLoginSuccess)
+        }
+
+        composeTestRule.onNodeWithText("Email").performTextInput("alan.turing@gmail.com")
+        composeTestRule.onNodeWithText("Contraseña").performTextInput("wrongpassword")
+        composeTestRule.onNodeWithText("Iniciar Sesión").performClick()
+
+        composeTestRule.onNodeWithText("Usuario o contraseña incorrectos").assertIsDisplayed()
+    }
+
+    @Test
+    fun inicioSesion_navigateToRegistro() {
+        composeTestRule.setContent {
+            InisioSeecion(navController = mockNavController, viewModel = mockUserViewModel, onLoginSuccess = onLoginSuccess)
+        }
+
+        composeTestRule.onNodeWithText("¿No tienes cuenta? Regístrate").performClick()
+
+        verify { mockNavController.navigate(AppRutas.Registro.route) }
     }
 }
